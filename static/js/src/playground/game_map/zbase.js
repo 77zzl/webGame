@@ -1,6 +1,5 @@
 class GameMap extends AcGameObject {
     constructor(playground) {
-        // 使用父类的构造函数，加入列表并初始化数据
         super();
         this.playground = playground;
         this.$canvas = $(`<canvas></canvas>`);
@@ -12,14 +11,20 @@ class GameMap extends AcGameObject {
 
     start() {
     }
-    
+
+    resize() {
+        this.ctx.canvas.width = this.playground.width;
+        this.ctx.canvas.height = this.playground.height;
+        this.ctx.fillStyle = "rgba(0, 0, 0, 1)";
+        this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    }
+
     update() {
         this.render();
     }
 
-    // 渲染
     render() {
-        this.ctx.fillStyle = "rgb(0, 0, 0, 0.2)";
+        this.ctx.fillStyle = "rgba(0, 0, 0)";
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     }
 }

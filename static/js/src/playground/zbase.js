@@ -56,6 +56,7 @@ class AcGamePlayground {
             this.mps = new MultiPlayerSocket(this)
             this.mps.uuid = this.players[0].uuid
 
+            // 连接成功后将调用onopen
             this.mps.ws.onopen = function() {
                 outer.mps.send_create_player(outer.root.settings.username, outer.root.settings.photo)
             }

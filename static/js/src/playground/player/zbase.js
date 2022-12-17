@@ -1,8 +1,6 @@
 class Player extends AcGameObject {
     // 父类，坐标，半径，颜色，速度，角色，昵称，头像
     constructor(playground, x, y, radius, color, speed, character, username, photo) {
-        console.log(character, username)
-
         super();
         this.playground = playground;
         this.ctx = this.playground.game_map.ctx;
@@ -35,8 +33,7 @@ class Player extends AcGameObject {
     start() {
         if (this.character === "me") { // 只能操作自己
             this.add_listening_events();
-       // } else if (this.character === "robot") {
-        } else {
+        } else if (this.character === "robot") {
             let tx = Math.random() * this.playground.width / this.playground.scale;
             let ty = Math.random() * this.playground.height / this.playground.scale;
             this.move_to(tx, ty);

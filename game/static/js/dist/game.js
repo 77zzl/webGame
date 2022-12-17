@@ -67,6 +67,7 @@ class AcGameObject {
         this.uuid = this.create_uuid();
     }
 
+    // 为每个对象都创建唯一id
     create_uuid() {
         let res = "";
         for (let i = 0; i < 8; i++) {
@@ -193,8 +194,6 @@ class Particle extends AcGameObject {
 class Player extends AcGameObject {
     // 父类，坐标，半径，颜色，速度，角色，昵称，头像
     constructor(playground, x, y, radius, color, speed, character, username, photo) {
-        console.log(character, username)
-
         super();
         this.playground = playground;
         this.ctx = this.playground.game_map.ctx;
@@ -227,8 +226,7 @@ class Player extends AcGameObject {
     start() {
         if (this.character === "me") { // 只能操作自己
             this.add_listening_events();
-       // } else if (this.character === "robot") {
-        } else {
+        } else if (this.character === "robot") {
             let tx = Math.random() * this.playground.width / this.playground.scale;
             let ty = Math.random() * this.playground.height / this.playground.scale;
             this.move_to(tx, ty);
@@ -442,6 +440,61 @@ class FireBall extends AcGameObject {
         this.ctx.fill();
     }
 }
+class MultiPlayerSocket {
+    constructor(playground) {
+        this.playground = playground;
+
+        // 建立连接
+        this.ws = new WebSocket("wss://app4230.acapp.acwing.com.cn/wss/multiplayer/");
+
+        this.start();
+    }
+
+    start() {
+        this.receive();
+    }
+
+    // 接受后端数据
+    receive () {
+        let outer = this;
+        // 获取信息
+        this.ws.onmessage = function(e) {
+            // 将json解析
+            let data = JSON.parse(e.data);
+            let uuid = data.uuid;
+            if (uuid === outer.uuid) return false;
+
+            let event = data.event;
+            if (event === "create_player") {
+                outer.receive_create_player(uuid, data.username, data.photo);
+            }
+        };
+    }
+
+    // 向后端发送创建用户请求
+    send_create_player(username, photo) {
+        let outer = this;
+        // 向后端发送字符串
+        this.ws.send(JSON.stringify({
+            'event': "create_player",
+            'uuid': outer.uuid,
+            'username': username,
+            'photo': photo,
+        }));
+    }
+
+    receive_create_player(uuid, username, photo) {
+        let player = new Player(
+            this.playground,
+            this.playground.width / 2 / this.playground.scale,
+            0.5, 0.05, "white", 0.15, "enemy", username, photo,
+        );
+
+        player.uuid = uuid;
+        this.playground.players.push(player);
+    }
+}
+
 class AcGamePlayground {
     constructor(root) {
         this.root = root;
@@ -500,6 +553,7 @@ class AcGamePlayground {
             this.mps = new MultiPlayerSocket(this)
             this.mps.uuid = this.players[0].uuid
 
+            // 连接成功后将调用onopen
             this.mps.ws.onopen = function() {
                 outer.mps.send_create_player(outer.root.settings.username, outer.root.settings.photo)
             }
@@ -608,6 +662,7 @@ class Settings {
 
         this.$register.hide();
 
+        this.$acwing_login = this.$settings.find('.ac-game-settings-acwing img');
         this.root.$ac_game.append(this.$settings);
 
         this.start();
@@ -622,7 +677,7 @@ class Settings {
     getinfo() {
         let outer = this
         $.ajax({
-            url:"http://119.23.105.122:8000/settings/getinfo/",
+            url:"https://app4230.acapp.acwing.com.cn/settings/getinfo/",
             type: "GET",
             success: function(resp) {
                 if (resp.result == "success") {
@@ -678,6 +733,23 @@ class Settings {
         this.$register_submit.click(function() {
             outer.register_on_remote()
         })
+        this.$acwing_login.click(function() {
+            outer.acwing_login();
+        });
+    }
+
+    // 向服务器发起请求acwing授权登陆
+    acwing_login() {
+        $.ajax({
+            url: "https://app4230.acapp.acwing.com.cn/settings/acwing/web/apply_code",
+            type: "GET",
+            success: function(resp) {
+                // 重定向到服务器返回的网址
+                if (resp.result === "success") {
+                    window.location.replace(resp.apply_code_url)
+                }
+            }
+        })
     }
 
     login_on_remote() {
@@ -687,7 +759,7 @@ class Settings {
         this.$login_error_message.empty()
 
         $.ajax({
-            url: "http://119.23.105.122:8000/settings/login/",
+            url: "https://app4230.acapp.acwing.com.cn/settings/login/",
             type: "GET",
             data: {
                 username: username,
@@ -711,7 +783,7 @@ class Settings {
         this.$register_error_message.empty()
 
         $.ajax({
-            url: "http://119.23.105.122:8000/settings/register/",
+            url: "https://app4230.acapp.acwing.com.cn/settings/register/",
             type: "GET",
             data: {
                 username: username,
@@ -731,7 +803,7 @@ class Settings {
 
     logout_on_remote() {
         $.ajax({
-            url: "http://119.23.105.122:8000/settings/logout/",
+            url: "https://app4230.acapp.acwing.com.cn/settings/logout/",
             type: "GET",
             success: function(resp) {
                 if (resp.result == 'success') {

@@ -9,6 +9,7 @@ class AcGameObject {
         this.uuid = this.create_uuid();
     }
 
+    // 为每个对象都创建唯一id
     create_uuid() {
         let res = "";
         for (let i = 0; i < 8; i++) {

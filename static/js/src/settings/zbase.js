@@ -96,6 +96,7 @@ class Settings {
 
         this.$register.hide();
 
+        this.$acwing_login = this.$settings.find('.ac-game-settings-acwing img');
         this.root.$ac_game.append(this.$settings);
 
         this.start();
@@ -110,7 +111,7 @@ class Settings {
     getinfo() {
         let outer = this
         $.ajax({
-            url:"http://119.23.105.122:8000/settings/getinfo/",
+            url:"https://app4230.acapp.acwing.com.cn/settings/getinfo/",
             type: "GET",
             success: function(resp) {
                 if (resp.result == "success") {
@@ -166,6 +167,23 @@ class Settings {
         this.$register_submit.click(function() {
             outer.register_on_remote()
         })
+        this.$acwing_login.click(function() {
+            outer.acwing_login();
+        });
+    }
+
+    // 向服务器发起请求acwing授权登陆
+    acwing_login() {
+        $.ajax({
+            url: "https://app4230.acapp.acwing.com.cn/settings/acwing/web/apply_code",
+            type: "GET",
+            success: function(resp) {
+                // 重定向到服务器返回的网址
+                if (resp.result === "success") {
+                    window.location.replace(resp.apply_code_url)
+                }
+            }
+        })
     }
 
     login_on_remote() {
@@ -175,7 +193,7 @@ class Settings {
         this.$login_error_message.empty()
 
         $.ajax({
-            url: "http://119.23.105.122:8000/settings/login/",
+            url: "https://app4230.acapp.acwing.com.cn/settings/login/",
             type: "GET",
             data: {
                 username: username,
@@ -199,7 +217,7 @@ class Settings {
         this.$register_error_message.empty()
 
         $.ajax({
-            url: "http://119.23.105.122:8000/settings/register/",
+            url: "https://app4230.acapp.acwing.com.cn/settings/register/",
             type: "GET",
             data: {
                 username: username,
@@ -219,7 +237,7 @@ class Settings {
 
     logout_on_remote() {
         $.ajax({
-            url: "http://119.23.105.122:8000/settings/logout/",
+            url: "https://app4230.acapp.acwing.com.cn/settings/logout/",
             type: "GET",
             success: function(resp) {
                 if (resp.result == 'success') {

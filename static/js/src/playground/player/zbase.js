@@ -25,13 +25,16 @@ class Player extends AcGameObject {
         this.spent_time = 0;
         this.cur_skill = null;
 
+        this.FireballCD = 1;
+        this.BlinkCD = 3;
+
         if (this.character === "me") {
             // 准备火球图标
-            this.fireball_coldtime = 3;
+            this.fireball_coldtime = this.FireballCD;
             this.fireball_img = new Image();
             this.fireball_img.src = "https://cdn.acwing.com/media/article/image/2021/12/02/1_9340c86053-fireball.png";
             // 准备闪现图标
-            this.blink_coldtime = 5;
+            this.blink_coldtime = this.BlinkCD;
             this.blink_img = new Image();
             this.blink_img.src = "https://cdn.acwing.com/media/article/image/2021/12/02/1_daccabdc53-blink.png"
 
@@ -129,7 +132,7 @@ class Player extends AcGameObject {
         let move_length = 3;
         let fireball = new FireBall(this.playground, this, x, y, radius, vx, vy, color, speed, move_length, 0.01);
         this.fireballs.push(fireball);
-        this.fireball_coldtime = 3;
+        this.fireball_coldtime = this.FireballCD;
 
         return fireball;
     }
@@ -150,7 +153,7 @@ class Player extends AcGameObject {
         let angle = Math.atan2(ty - this.y, tx - this.x)
         this.x += d * Math.cos(angle)
         this.y += d * Math.sin(angle)
-        this.blink_coldtime = 5
+        this.blink_coldtime = this.BlinkCD;
         this.move_length = 0
     }
 
@@ -285,7 +288,7 @@ class Player extends AcGameObject {
         if (this.fireball_coldtime > 0) {
             this.ctx.beginPath();
             this.ctx.moveTo(x * scale, y * scale);
-            this.ctx.arc(x * scale, y * scale, r * scale, 0 - Math.PI / 2, Math.PI * 2 * (1 - this.fireball_coldtime / 3) - Math.PI / 2, true);
+            this.ctx.arc(x * scale, y * scale, r * scale, 0 - Math.PI / 2, Math.PI * 2 * (1 - this.fireball_coldtime / this.FireballCD) - Math.PI / 2, true);
             this.ctx.lineTo(x * scale, y * scale);
             this.ctx.fillStyle = "rgba(255, 250, 244, 0.6)";
             this.ctx.fill();
@@ -303,7 +306,7 @@ class Player extends AcGameObject {
         if (this.blink_coldtime > 0) {
             this.ctx.beginPath();
             this.ctx.moveTo(x * scale, y * scale);
-            this.ctx.arc(x * scale, y * scale, r * scale, 0 - Math.PI / 2, Math.PI * 2 * (1 - this.blink_coldtime / 5) - Math.PI / 2, true);
+            this.ctx.arc(x * scale, y * scale, r * scale, 0 - Math.PI / 2, Math.PI * 2 * (1 - this.blink_coldtime / this.BlinkCD) - Math.PI / 2, true);
             this.ctx.lineTo(x * scale, y * scale);
             this.ctx.fillStyle = "rgba(255, 250, 244, 0.6)";
             this.ctx.fill();
@@ -312,8 +315,10 @@ class Player extends AcGameObject {
     }
 
     on_destroy() {
-        if (this.character === "me")
+        if (this.character === "me") {
             this.playground.state = "over";
+            this.playground.notice_board.write("Game Over")
+        }
 
         for (let i = 0; i < this.playground.players.length; i ++ ) {
             if (this.playground.players[i] === this) {

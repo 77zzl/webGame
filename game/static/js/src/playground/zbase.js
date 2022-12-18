@@ -34,13 +34,22 @@ class AcGamePlayground {
 
     show(mode) {  // 打开playground界面
         let outer = this;
+
         this.$playground.show();
 
         this.width = this.$playground.width();
         this.height = this.$playground.height();
         this.game_map = new GameMap(this);
-        this.resize();
 
+        // 记录当前模式
+        this.mode = mode;
+        // 记录当前游戏状态
+        // waiting -> fighting -> over
+        this.state = "waiting"
+        this.notice_board = new NoticeBoard(this)
+        this.player_count = 0
+
+        this.resize();
         // 创建用户列表
         this.players = []
         // 先添加自己

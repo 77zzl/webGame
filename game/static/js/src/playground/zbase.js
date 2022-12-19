@@ -62,6 +62,7 @@ class AcGamePlayground {
             }
 
         } else if (mode === "multi mode") { // 针对多人模式开启会话
+            this.chat_field = new ChatField(this)
             this.mps = new MultiPlayerSocket(this)
             this.mps.uuid = this.players[0].uuid
 

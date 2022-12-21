@@ -38,6 +38,7 @@ class MultiPlayer(AsyncWebsocketConsumer):
         # Create a client to use the protocol encoder
         client = Match.Client(protocol)
 
+        # 在同步中调用数据库必须封装成函数
         def db_get_player():
             return Player.objects.get(user__username=data['username'])
 
@@ -89,6 +90,37 @@ class MultiPlayer(AsyncWebsocketConsumer):
 
     # 发送收击信息
     async def attack(self, data):
+        if not self.room_name:
+            return
+        players = cache.get(self.room_name)
+        if not players:
+            return
+
+        # 减血
+        for player in players:
+            if player['uuid'] == data['attackee_uuid']:
+                player['hp'] -= 25
+
+        # 统计剩余人数并刷新redis
+        remain_cnt = 0
+        for player in players:
+            if player['hp'] > 0:
+                remain_cnt += 1
+        # 对局存在且还有人
+        if remain_cnt > 1:
+            if self.room_name:
+                cache.set(self.room_name, players, 3600)
+        else:
+            def db_update_player_score(username, score):
+                player = Player.objects.get(user__username = username)
+                player.score += score
+                player.save()
+            for player in players:
+                if player['hp'] <= 0:
+                    await database_sync_to_async(db_update_player_score)(player['username'], -2)
+                else:
+                    await database_sync_to_async(db_update_player_score)(player['username'], 3)
+
         await self.channel_layer.group_send(
             self.room_name,
             {

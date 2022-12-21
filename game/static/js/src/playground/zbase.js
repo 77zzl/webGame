@@ -47,6 +47,7 @@ class AcGamePlayground {
         // waiting -> fighting -> over
         this.state = "waiting"
         this.notice_board = new NoticeBoard(this)
+        this.score_board = new ScoreBoard(this)
         this.player_count = 0
 
         this.resize();
@@ -74,6 +75,32 @@ class AcGamePlayground {
     }
 
     hide() {  // 关闭playground界面
-        this.$playground.hide();
+        //  清除所有玩家
+        while (this.players && this.players.length > 0) {
+            this.players[0].destroy()
+        }
+
+        // 删除地图
+        if (this.game_map) {
+            this.game_map.destroy()
+            this.game_map = null
+        }
+
+        // 删除游戏状态板
+        if (this.notice_board) {
+            this.notice_board.destroy()
+            this.notice_board = null
+        }
+
+        // 删除胜负提示框
+        if (this.score_board) {
+            this.score_board.destroy()
+            this.score_borad = null
+        }
+
+        // 清空所有html标签
+        this.$playground.empty()
+
+        this.$playground.hide()
     }
 }

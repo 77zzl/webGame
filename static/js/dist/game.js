@@ -81,7 +81,10 @@ class AcGameObject {
     start() {  // 只会在第一帧执行一次
     }
 
-    update() {  // 每一帧均会执行一次
+    update() {  // 每一帧会执行一次
+    }
+
+    late_update() { // 每一帧最后会执行一次
     }
 
     on_destroy() {  // 在被销毁前执行一次
@@ -111,6 +114,12 @@ let AC_GAME_ANIMATION = function(timestamp) {
             obj.update();
         }
     }
+
+    for (let i = 0; i < AC_GAME_OBJECTS.length; i ++) {
+        let obj = AC_GAME_OBJECTS[i]
+        obj.late_update()
+    }
+
     last_timestamp = timestamp;
 
     requestAnimationFrame(AC_GAME_ANIMATION);
@@ -508,11 +517,20 @@ class Player extends AcGameObject {
 
     update() {
         this.spent_time += this.timedelta / 1000;
+        this.update_win();
         if (this.character === "me" && this.playground.state === "fighting") {
             this.update_coldtime();
         }
         this.update_move();
         this.render();
+    }
+
+    // 如果自己赢了则刷新界面
+    update_win() {
+        if (this.playground.state === 'fighting' && this.character === 'me' && this.playground.players.length === 1) {
+            this.playground.state = 'over'
+            this.playground.score_board.win()
+        }
     }
 
     // 更新技能时间
@@ -622,9 +640,9 @@ class Player extends AcGameObject {
     }
 
     on_destroy() {
-        if (this.character === "me") {
+        if (this.character === "me" && this.playground.state === "fighting") {
             this.playground.state = "over";
-            this.playground.notice_board.write("Game Over")
+            this.playground.score_board.lose()
         }
 
         for (let i = 0; i < this.playground.players.length; i ++ ) {
@@ -632,6 +650,65 @@ class Player extends AcGameObject {
                 this.playground.players.splice(i, 1);
                 break
             }
+        }
+    }
+}
+class ScoreBoard extends AcGameObject {
+    constructor(playground) {
+        super()
+        this.playground = playground
+        this.ctx = this.playground.game_map.ctx
+        this.state = null
+        this.win_img = new Image()
+        this.win_img.src = "https://cdn.acwing.com/media/article/image/2021/12/17/1_8f58341a5e-win.png"
+        this.lose_img = new Image()
+        this.lose_img.src = "https://cdn.acwing.com/media/article/image/2021/12/17/1_9254b5f95e-lose.png"
+    }
+
+    start() {
+    }
+
+    add_listening_events() {
+        let outer = this
+        let $canvas = this.playground.game_map.$canvas
+
+        // 点击后返回菜单界面
+        $canvas.on('click', function() {
+            outer.playground.hide()
+            outer.playground.root.menu.show()
+        })
+    }
+
+    // 胜利后显示胜利页面并允许点击后返回菜单
+    win() {
+        this.state = 'win'
+        let outer = this
+        setTimeout(function() {
+            outer.add_listening_events()
+        }, 1000)
+    }
+
+    // 失败后显示胜利页面并允许点击后返回菜单
+    lose() {
+        this.state = 'lose'
+        let outer = this
+        setTimeout(function() {
+            outer.add_listening_events()
+        }, 1000)
+    }
+
+    // 在最后一帧更新
+    late_update() {
+        this.render()
+    }
+
+    // 渲染胜负界面
+    render() {
+        let len = this.playground.height / 2
+        if (this.state === 'win') {
+            this.ctx.drawImage(this.win_img, this.playground.width / 2 - len / 2, this.playground.height / 2 - len / 2, len, len)
+        } else if (this.state === 'lose') {
+            this.ctx.drawImage(this.lose_img, this.playground.width / 2 - len / 2, this.playground.height / 2 - len / 2, len, len)
         }
     }
 }
@@ -956,6 +1033,7 @@ class AcGamePlayground {
         // waiting -> fighting -> over
         this.state = "waiting"
         this.notice_board = new NoticeBoard(this)
+        this.score_board = new ScoreBoard(this)
         this.player_count = 0
 
         this.resize();
@@ -983,7 +1061,33 @@ class AcGamePlayground {
     }
 
     hide() {  // 关闭playground界面
-        this.$playground.hide();
+        //  清除所有玩家
+        while (this.players && this.players.length > 0) {
+            this.players[0].destroy()
+        }
+
+        // 删除地图
+        if (this.game_map) {
+            this.game_map.destroy()
+            this.game_map = null
+        }
+
+        // 删除游戏状态板
+        if (this.notice_board) {
+            this.notice_board.destroy()
+            this.notice_board = null
+        }
+
+        // 删除胜负提示框
+        if (this.score_board) {
+            this.score_board.destroy()
+            this.score_borad = null
+        }
+
+        // 清空所有html标签
+        this.$playground.empty()
+
+        this.$playground.hide()
     }
 }
 class Settings {

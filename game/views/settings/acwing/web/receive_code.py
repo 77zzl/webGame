@@ -1,10 +1,11 @@
-from django.shortcuts import redirect
+from django.shortcuts import redirect, reverse
 from django.core.cache import cache
 import requests
 from django.contrib.auth.models import User
 from game.models.player.player import Player
 from django.contrib.auth import login
 from random import randint
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 # 接受来自acwing的信息
@@ -32,8 +33,10 @@ def receive_code(request):
     # 判断用户是否已通过授权渠道注册过
     players = Player.objects.filter(openid=openid)
     if players.exists():
-        login(request, players[0].user)
-        return redirect("index")
+        # 手动获取refresh
+        refresh = RefreshToken.for_user(players[0].user)
+        # reverse根据名称转换为完整链接
+        return redirect(reverse("index") + "?access=%s&refresh=%s" % (str(refresh.access_token), str(refresh)))
 
     # 获取用户信息
     get_userinfo_url = "https://www.acwing.com/third_party/api/meta/identity/getinfo/"
@@ -52,6 +55,7 @@ def receive_code(request):
     # 注册授权用户并登录
     user = User.objects.create(username=username)
     player = Player.objects.create(user=user, photo=photo, openid=openid)
-    login(request, user)
 
-    return redirect("index")
+    refresh = RefreshToken.for_user(user)
+    return redirect(reverse("index") + "?access=%s&refresh=%s" % (str(refresh.access_token), str(refresh)))
+

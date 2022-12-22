@@ -14,11 +14,15 @@ from channels.db import database_sync_to_async
 
 class MultiPlayer(AsyncWebsocketConsumer):
     async def connect(self):
+        user = self.scope['user']
         # 后端同意连接则调用accept
-        await self.accept()
+        if user.is_authenticated:
+            await self.accept()
+        else:
+            await self.close()
 
     async def disconnect(self, close_code):
-        if self.room_name:
+        if hasattr(self, 'room_name') and self.room_name:
             await self.channel_layer.group_discard(self.room_name, self.channel_name)
 
     # 将用户添加进房间

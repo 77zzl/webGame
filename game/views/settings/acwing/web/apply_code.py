@@ -21,7 +21,7 @@ def apply_code(request):
 
     # 将随机码存入redis，有效期两小时
     cache.set(state, True, 7200)
-    # 向前端发送授权网址
+    # 向acwing发送授权申请
     return JsonResponse({
         'result': 'success',
         'apply_code_url': apply_code_url + "?appid=%s&redirect_uri=%s&scope=%s&state=%s" % (appid, redirect_uri, scope, state)

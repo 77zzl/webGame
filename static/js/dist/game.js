@@ -1212,6 +1212,7 @@ class Settings {
     }
 
     refresh_jwt_token() {
+        // 用refresh刷新access
         setInterval(() => {
             $.ajax({
                 url: "https://app4230.acapp.acwing.com.cn/settings/token/refresh/",
@@ -1225,6 +1226,7 @@ class Settings {
             })
         }, 4.5 * 60 * 1000)
 
+        // 天梯排名
         $.ajax({
             url: "https://app4230.acapp.acwing.com.cn/settings/ranklist/",
             type: "get",
@@ -1276,8 +1278,12 @@ class Settings {
     }
 
     add_listening_events() {
+        let outer = this
         this.add_listening_events_login()
         this.add_listening_events_register()
+        this.$acwing_login.click(function() {
+            outer.acwing_login();
+        });
     }
 
     add_listening_events_login() {
@@ -1298,9 +1304,6 @@ class Settings {
         this.$register_submit.click(function() {
             outer.register_on_remote()
         })
-        this.$acwing_login.click(function() {
-            outer.acwing_login();
-        });
     }
 
     // 向服务器发起请求acwing授权登陆
@@ -1318,6 +1321,7 @@ class Settings {
     }
 
     login_on_remote(username, password) {
+        let storage = window.localStorage
         username = username || this.$login_username.val()
         password = password || this.$login_password.val()
         this.$login_error_message.empty()
@@ -1332,6 +1336,11 @@ class Settings {
             success: resp => {
                 this.root.access = resp.access
                 this.root.refresh = resp.refresh
+
+                // 存入本地缓存
+                storage.setItem("access" ,resp.access)
+                storage.setItem("refresh", resp.refresh)
+
                 this.refresh_jwt_token()
                 this.getinfo()
             },

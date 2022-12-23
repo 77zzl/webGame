@@ -75,6 +75,9 @@ class Settings {
             </div>
         </div>
     </div>
+    <div class="ac-game-settings-footer">
+        <a href="https://beian.miit.gov.cn">icp</a>
+    </div>
 </div>
             `)
         this.$login = this.$settings.find(".ac-game-settings-login");

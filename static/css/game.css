@@ -171,7 +171,7 @@
     transform: translate(-50%, -50%);
 }
 
-c-game-chat-field-history {
+.ac-game-chat-field-history {
     position: absolute;
     top: 66%;
     left: 20%;
@@ -243,5 +243,37 @@ c-game-chat-field-history {
     background-color: rgba(222,225,230, 0.2);
 }
 
+.ac-game-settings-footer {
+    position: absolute;
+    top: 98%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
 
+.ac-game-settings-footer a {
+    color: #7ba0cb;
+    text-decoration :none;
+}
+
+.ac-game-settings-footer a:hover {
+    color: #e8f6fc;
+    text-decoration :none;
+}
+
+.ac-game-menu-footer {
+    position: absolute;
+    top: 98%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.ac-game-menu-footer a {
+    color: #7ba0cb;
+    text-decoration :none;
+}
+
+.ac-game-menu-footer a:hover {
+    color: #e8f6fc;
+    text-decoration :none;
+}
 

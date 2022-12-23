@@ -17,6 +17,9 @@ class AcGameMenu {
             退出
         </div>
     </div>
+    <div class="ac-game-menu-footer">
+        <a href="https://beian.miit.gov.cn">icp</a>
+    </div>
 </div>
 `);
         this.$menu.hide();
@@ -1166,6 +1169,9 @@ class Settings {
                 AcWing一键登录
             </div>
         </div>
+    </div>
+    <div class="ac-game-settings-footer">
+        <a href="https://beian.miit.gov.cn">icp</a>
     </div>
 </div>
             `)

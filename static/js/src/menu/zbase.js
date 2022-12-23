@@ -17,6 +17,9 @@ class AcGameMenu {
             退出
         </div>
     </div>
+    <div class="ac-game-menu-footer">
+        <a href="https://beian.miit.gov.cn">icp</a>
+    </div>
 </div>
 `);
         this.$menu.hide();

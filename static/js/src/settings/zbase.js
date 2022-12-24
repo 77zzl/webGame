@@ -107,30 +107,41 @@ class Settings {
     }
 
     start() {
-        if (this.root.access) {
-            this.getinfo()
-            this.refresh_jwt_token()
-        } else {
-            this.login()
+        if (!this.root.refresh) {
+            this.root.refresh = window.localStorage.getItem("refresh")
         }
+        this.refresh_jwt_token()
         this.add_listening_events()
+    }
+
+    access_update() {
+        setInterval(() => {
+            this.refresh_jwt_token()
+        }, 4.5 * 60 * 1000)
     }
 
     refresh_jwt_token() {
         // 用refresh刷新access
-        setInterval(() => {
-            $.ajax({
-                url: "https://app4230.acapp.acwing.com.cn/settings/token/refresh/",
-                type: "post",
-                data: {
-                    refresh: this.root.refresh,
-                },
-                success: resp => {
-                    this.root.access = resp.access
-                }
-            })
-        }, 4.5 * 60 * 1000)
+        $.ajax({
+            url: "https://app4230.acapp.acwing.com.cn/settings/token/refresh/",
+            type: "post",
+            data: {
+                refresh: this.root.refresh,
+            },
+            success: resp => {
+                this.root.access = resp.access
+                window.localStorage.setItem("access", resp.access)
+                this.getinfo()
+                this.access_update()
+            },
+            error: () => {
+                this.login()
+            }
+        })
+    }
 
+    // todo
+    getRank() {
         // 天梯排名
         $.ajax({
             url: "https://app4230.acapp.acwing.com.cn/settings/ranklist/",
@@ -160,6 +171,9 @@ class Settings {
                 } else {
                     this.login()
                 }
+            },
+            error: () => {
+                this.login()
             }
         })
     }
@@ -281,6 +295,9 @@ class Settings {
 
 
     logout_on_remote() {
+        let storage = window.localStorage
+        storage.removeItem("access")
+        storage.removeItem("refresh")
         this.root.access = ""
         this.root.refresh = ""
         location.href = "/"

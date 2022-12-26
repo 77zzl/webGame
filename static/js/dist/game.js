@@ -307,7 +307,7 @@ class Particle extends AcGameObject {
 }
 class Player extends AcGameObject {
     // 父类，坐标，半径，颜色，速度，角色，昵称，头像
-    constructor(playground, x, y, radius, color, speed, character, username, photo) {
+    constructor(playground, x, y, radius, color, speed, character) {
         super();
         this.playground = playground;
         this.ctx = this.playground.game_map.ctx;
@@ -323,8 +323,6 @@ class Player extends AcGameObject {
         this.color = color;
         this.speed = speed;
         this.character = character;
-        this.username = username;
-        this.photo = photo;
 
         this.fireballs = [];
         this.eps = 0.01;
@@ -345,10 +343,6 @@ class Player extends AcGameObject {
             this.blink_img = new Image();
             this.blink_img.src = "https://cdn.acwing.com/media/article/image/2021/12/02/1_daccabdc53-blink.png"
 
-        }
-        if (this.character !== "robot") {
-            this.img = new Image();
-            this.img.src = this.photo;
         }
     }
 
@@ -582,20 +576,10 @@ class Player extends AcGameObject {
 
     render() {
         let scale = this.playground.scale;
-        if (this.character !== "robot") {
-            this.ctx.save();
-            this.ctx.beginPath();
-            this.ctx.arc(this.x * scale, this.y * scale, this.radius * scale, 0, Math.PI * 2, false);
-            this.ctx.stroke();
-            this.ctx.clip();
-            this.ctx.drawImage(this.img, (this.x - this.radius) * scale, (this.y - this.radius) * scale, this.radius * 2 * scale, this.radius * 2 * scale);
-            this.ctx.restore();
-        } else {
-            this.ctx.beginPath();
-            this.ctx.arc(this.x * scale, this.y * scale, this.radius * scale, 0, Math.PI * 2, false);
-            this.ctx.fillStyle = this.color;
-            this.ctx.fill();
-        }
+        this.ctx.beginPath();
+        this.ctx.arc(this.x * scale, this.y * scale, this.radius * scale, 0, Math.PI * 2, false);
+        this.ctx.fillStyle = this.color;
+        this.ctx.fill();
 
         if (this.character === "me" && this.playground.state === "fighting")
             this.render_skill_coldtime()
@@ -837,7 +821,7 @@ class MultiPlayerSocket {
 
             let event = data.event;
             if (event === "create_player") {
-                outer.receive_create_player(uuid, data.username, data.photo);
+                outer.receive_create_player(uuid, data.username, "");
             } else if (event === "move_to") {
                 outer.receive_move_to(uuid, data.tx, data.ty)
             } else if (event == "shoot_fireball") {
@@ -871,7 +855,7 @@ class MultiPlayerSocket {
             'event': "create_player",
             'uuid': outer.uuid,
             'username': username,
-            'photo': photo,
+            'photo': "",
         }));
     }
 
@@ -880,7 +864,7 @@ class MultiPlayerSocket {
         let player = new Player(
             this.playground,
             this.playground.width / 2 / this.playground.scale,
-            0.5, 0.05, "white", 0.15, "enemy", username, photo,
+            0.5, 0.05, "white", 0.15, "enemy"
         );
 
         player.uuid = uuid;
@@ -1043,7 +1027,7 @@ class AcGamePlayground {
         // 创建用户列表
         this.players = []
         // 先添加自己
-        this.players.push(new Player(this, this.width / 2 / this.scale, 0.5, 0.05, "white", 0.15, "me", this.root.settings.username, this.root.settings.photo));
+        this.players.push(new Player(this, this.width / 2 / this.scale, 0.5, 0.05, "white", 0.15, "me"));
 
         if (mode === "single mode") { // 针对单人模式生成人机
             let colors = ["#9b95c9", "#78cdd1", "#9d9087", "#ac6767", "#73b9a2", "#656565"];
@@ -1058,7 +1042,7 @@ class AcGamePlayground {
 
             // 连接成功后将调用onopen
             this.mps.ws.onopen = function() {
-                outer.mps.send_create_player(outer.root.settings.username, outer.root.settings.photo)
+                outer.mps.send_create_player(outer.root.settings.username, "")
             }
         }
     }
@@ -1097,7 +1081,6 @@ class Settings {
     constructor(root) {
         this.root = root
         this.username = ""
-        this.photo = ""
 
         this.$settings = $(`
 <div class="ac-game-settings">
@@ -1260,7 +1243,6 @@ class Settings {
             success: resp => {
                 if (resp.result == "success") {
                     this.username = resp.username
-                    this.photo = resp.photo
                     this.hide()
                     this.root.menu.show()
                 } else {
@@ -1404,6 +1386,10 @@ export class AcGame {
         this.id = id;
         this.access = access;
         this.refresh = refresh;
+        if (access && refresh) {
+            window.localStorage.setItem("access", access)
+            window.localStorage.setItem("refresh", refresh)
+        }
         this.$ac_game = $('#' + id);
 
         this.settings = new Settings(this);

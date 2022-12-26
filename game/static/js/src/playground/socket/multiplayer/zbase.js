@@ -24,7 +24,7 @@ class MultiPlayerSocket {
 
             let event = data.event;
             if (event === "create_player") {
-                outer.receive_create_player(uuid, data.username, data.photo);
+                outer.receive_create_player(uuid, data.username, "");
             } else if (event === "move_to") {
                 outer.receive_move_to(uuid, data.tx, data.ty)
             } else if (event == "shoot_fireball") {
@@ -58,7 +58,7 @@ class MultiPlayerSocket {
             'event': "create_player",
             'uuid': outer.uuid,
             'username': username,
-            'photo': photo,
+            'photo': "",
         }));
     }
 
@@ -67,7 +67,7 @@ class MultiPlayerSocket {
         let player = new Player(
             this.playground,
             this.playground.width / 2 / this.playground.scale,
-            0.5, 0.05, "white", 0.15, "enemy", username, photo,
+            0.5, 0.05, "white", 0.15, "enemy"
         );
 
         player.uuid = uuid;

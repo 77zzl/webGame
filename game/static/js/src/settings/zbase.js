@@ -2,7 +2,6 @@ class Settings {
     constructor(root) {
         this.root = root
         this.username = ""
-        this.photo = ""
 
         this.$settings = $(`
 <div class="ac-game-settings">
@@ -165,7 +164,6 @@ class Settings {
             success: resp => {
                 if (resp.result == "success") {
                     this.username = resp.username
-                    this.photo = resp.photo
                     this.hide()
                     this.root.menu.show()
                 } else {

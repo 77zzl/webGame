@@ -14,7 +14,6 @@ class RanklistView(APIView):
         for player in players:
             resp.append({
                 'username': player.user.username,
-                'photo': player.photo,
                 'score': player.score
             })
         return Response(resp)

@@ -13,5 +13,5 @@ class InfoView(APIView):
         return Response({
             'result': "success",
             'username': user.username,
-            'photo': player.photo,
+            'photo': '',
         })

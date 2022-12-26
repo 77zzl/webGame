@@ -46,7 +46,6 @@ def receive_code(request):
             }
     userinfo_res = requests.get(get_userinfo_url, params=params).json()
     username = userinfo_res['username']
-    photo = userinfo_res['photo']
 
     # 如果授权用户与数据库已有的用户重名则为其随机更名
     while User.objects.filter(username = username).exists():
@@ -54,7 +53,7 @@ def receive_code(request):
 
     # 注册授权用户并登录
     user = User.objects.create(username=username)
-    player = Player.objects.create(user=user, photo=photo, openid=openid)
+    player = Player.objects.create(user=user, photo='', openid=openid)
 
     refresh = RefreshToken.for_user(user)
     return redirect(reverse("index") + "?access=%s&refresh=%s" % (str(refresh.access_token), str(refresh)))

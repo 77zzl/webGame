@@ -1,6 +1,6 @@
 class Player extends AcGameObject {
     // 父类，坐标，半径，颜色，速度，角色，昵称，头像
-    constructor(playground, x, y, radius, color, speed, character, username, photo) {
+    constructor(playground, x, y, radius, color, speed, character) {
         super();
         this.playground = playground;
         this.ctx = this.playground.game_map.ctx;
@@ -16,8 +16,6 @@ class Player extends AcGameObject {
         this.color = color;
         this.speed = speed;
         this.character = character;
-        this.username = username;
-        this.photo = photo;
 
         this.fireballs = [];
         this.eps = 0.01;
@@ -38,10 +36,6 @@ class Player extends AcGameObject {
             this.blink_img = new Image();
             this.blink_img.src = "https://cdn.acwing.com/media/article/image/2021/12/02/1_daccabdc53-blink.png"
 
-        }
-        if (this.character !== "robot") {
-            this.img = new Image();
-            this.img.src = this.photo;
         }
     }
 
@@ -275,20 +269,10 @@ class Player extends AcGameObject {
 
     render() {
         let scale = this.playground.scale;
-        if (this.character !== "robot") {
-            this.ctx.save();
-            this.ctx.beginPath();
-            this.ctx.arc(this.x * scale, this.y * scale, this.radius * scale, 0, Math.PI * 2, false);
-            this.ctx.stroke();
-            this.ctx.clip();
-            this.ctx.drawImage(this.img, (this.x - this.radius) * scale, (this.y - this.radius) * scale, this.radius * 2 * scale, this.radius * 2 * scale);
-            this.ctx.restore();
-        } else {
-            this.ctx.beginPath();
-            this.ctx.arc(this.x * scale, this.y * scale, this.radius * scale, 0, Math.PI * 2, false);
-            this.ctx.fillStyle = this.color;
-            this.ctx.fill();
-        }
+        this.ctx.beginPath();
+        this.ctx.arc(this.x * scale, this.y * scale, this.radius * scale, 0, Math.PI * 2, false);
+        this.ctx.fillStyle = this.color;
+        this.ctx.fill();
 
         if (this.character === "me" && this.playground.state === "fighting")
             this.render_skill_coldtime()

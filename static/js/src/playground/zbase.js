@@ -54,7 +54,7 @@ class AcGamePlayground {
         // 创建用户列表
         this.players = []
         // 先添加自己
-        this.players.push(new Player(this, this.width / 2 / this.scale, 0.5, 0.05, "white", 0.15, "me", this.root.settings.username, this.root.settings.photo));
+        this.players.push(new Player(this, this.width / 2 / this.scale, 0.5, 0.05, "white", 0.15, "me"));
 
         if (mode === "single mode") { // 针对单人模式生成人机
             let colors = ["#9b95c9", "#78cdd1", "#9d9087", "#ac6767", "#73b9a2", "#656565"];
@@ -69,7 +69,7 @@ class AcGamePlayground {
 
             // 连接成功后将调用onopen
             this.mps.ws.onopen = function() {
-                outer.mps.send_create_player(outer.root.settings.username, outer.root.settings.photo)
+                outer.mps.send_create_player(outer.root.settings.username, "")
             }
         }
     }

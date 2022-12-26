@@ -3,7 +3,7 @@ class NoticeBoard extends AcGameObject {
         super()
         this.playground = playground
         this.ctx = this.playground.game_map.ctx
-        this.text = "已就绪：0人"
+        this.text = "匹配中"
     }
 
     start() {

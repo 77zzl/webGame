@@ -41,7 +41,7 @@ class Player extends AcGameObject {
 
     start() {
         this.playground.player_count ++;
-        this.playground.notice_board.write("已就绪："+this.playground.player_count+ "人");
+        this.playground.notice_board.write("匹配中");
 
         if (this.playground.player_count >= 3) {
             this.playground.state = "fighting"

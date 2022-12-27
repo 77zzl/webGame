@@ -40,6 +40,7 @@ class AcGamePlayground {
         this.width = this.$playground.width();
         this.height = this.$playground.height();
         this.game_map = new GameMap(this);
+        this.game_map.$canvas.focus()
 
         // 记录当前模式
         this.mode = mode;
@@ -55,6 +56,7 @@ class AcGamePlayground {
         this.players = []
         // 先添加自己
         this.players.push(new Player(this, this.width / 2 / this.scale, 0.5, 0.05, "white", 0.15, "me"));
+        this.quit_board = new QuitBoard(this)
 
         if (mode === "single mode") { // 针对单人模式生成人机
             let colors = ["#9b95c9", "#78cdd1", "#9d9087", "#ac6767", "#73b9a2", "#656565"];

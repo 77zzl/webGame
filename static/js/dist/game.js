@@ -369,7 +369,10 @@ class Player extends AcGameObject {
         this.playground.game_map.$canvas.on("contextmenu", function() {
             return false;
         });
+        // 监听鼠标
         this.playground.game_map.$canvas.mousedown(function(e) {
+            if (e.which === 1)
+                outer.playground.quit_board.hide()
             if (outer.playground.state !== "fighting")
                 return true;
 
@@ -382,6 +385,7 @@ class Player extends AcGameObject {
                     outer.playground.mps.send_move_to(tx, ty)
                 }
             } else if (e.which === 1) {
+                outer.playground.quit_board.hide()
                 if (outer.cur_skill === "fireball") {
                     if (outer.fireball_coldtime > outer.eps)
                         return false;
@@ -403,6 +407,7 @@ class Player extends AcGameObject {
             }
         });
 
+        // 监听键盘
         this.playground.game_map.$canvas.keydown(function(e) {
             // 监听聊天框
             if (e.which === 13) {   // enter打开聊天框
@@ -410,10 +415,9 @@ class Player extends AcGameObject {
                     outer.playground.chat_field.show_input()
                     return false;
                 }
-            } else if (e.which === 27) {    // esc关闭聊天框
-                if (outer.playground.mode === "multi mode") {
-                    outer.playground.chat_field.hide_input()
-                }
+            } else if (e.which === 27) {    // esc游戏内退出
+                outer.playground.quit_board.show()
+                return false
             }
 
             // 战斗开始后监听技能
@@ -638,6 +642,41 @@ class Player extends AcGameObject {
                 break
             }
         }
+    }
+}
+class QuitBoard {
+    constructor(playground) {
+        this.playground = playground
+        this.$quit_board = $(`
+            <div class="ac-game-quit">
+                <div class="ac-game-quit-item">退出游戏</div>
+            </div>
+            `)
+        this.playground.$playground.append(this.$quit_board)
+        this.$quit = this.$quit_board.find('.ac-game-quit-item')
+        this.hide()
+        this.start()
+    }
+
+    start() {
+        this.add_listening_events()
+    }
+
+    add_listening_events() {
+        let outer = this
+        this.$quit.click(function() {
+            outer.hide()
+            outer.playground.hide()
+            outer.playground.root.menu.show()
+        })
+    }
+
+    show() {
+        this.$quit_board.show()
+    }
+
+    hide() {
+        this.$quit_board.hide()
     }
 }
 class ScoreBoard extends AcGameObject {
@@ -1013,6 +1052,7 @@ class AcGamePlayground {
         this.width = this.$playground.width();
         this.height = this.$playground.height();
         this.game_map = new GameMap(this);
+        this.game_map.$canvas.focus()
 
         // 记录当前模式
         this.mode = mode;
@@ -1028,6 +1068,7 @@ class AcGamePlayground {
         this.players = []
         // 先添加自己
         this.players.push(new Player(this, this.width / 2 / this.scale, 0.5, 0.05, "white", 0.15, "me"));
+        this.quit_board = new QuitBoard(this)
 
         if (mode === "single mode") { // 针对单人模式生成人机
             let colors = ["#9b95c9", "#78cdd1", "#9d9087", "#ac6767", "#73b9a2", "#656565"];

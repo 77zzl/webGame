@@ -277,3 +277,29 @@
     text-decoration :none;
 }
 
+.ac-game-quit {
+    width: 20vw;
+    position: absolute;
+    top: 60%;
+    left: 42.5%;
+}
+
+.ac-game-quit-item {
+    color: white;
+    height: 6vh;
+    width: 15vw;
+    font-size: 3vh;
+    font-style: italic;
+    text-align: center;
+    display: table-cell;
+    vertical-align:middle;
+    background-color: rgba(255, 250, 244, 0.6);
+    border-radius: 10px;
+    letter-spacing: 0.8vw;
+    cursor: pointer;
+}
+
+.ac-game-quit-item:hover {
+    transform: scale(1.2);
+    transition: 100ms;
+}

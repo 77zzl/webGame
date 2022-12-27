@@ -62,7 +62,10 @@ class Player extends AcGameObject {
         this.playground.game_map.$canvas.on("contextmenu", function() {
             return false;
         });
+        // 监听鼠标
         this.playground.game_map.$canvas.mousedown(function(e) {
+            if (e.which === 1)
+                outer.playground.quit_board.hide()
             if (outer.playground.state !== "fighting")
                 return true;
 
@@ -75,6 +78,7 @@ class Player extends AcGameObject {
                     outer.playground.mps.send_move_to(tx, ty)
                 }
             } else if (e.which === 1) {
+                outer.playground.quit_board.hide()
                 if (outer.cur_skill === "fireball") {
                     if (outer.fireball_coldtime > outer.eps)
                         return false;
@@ -96,6 +100,7 @@ class Player extends AcGameObject {
             }
         });
 
+        // 监听键盘
         this.playground.game_map.$canvas.keydown(function(e) {
             // 监听聊天框
             if (e.which === 13) {   // enter打开聊天框
@@ -103,10 +108,9 @@ class Player extends AcGameObject {
                     outer.playground.chat_field.show_input()
                     return false;
                 }
-            } else if (e.which === 27) {    // esc关闭聊天框
-                if (outer.playground.mode === "multi mode") {
-                    outer.playground.chat_field.hide_input()
-                }
+            } else if (e.which === 27) {    // esc游戏内退出
+                outer.playground.quit_board.show()
+                return false
             }
 
             // 战斗开始后监听技能

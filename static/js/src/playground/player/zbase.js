@@ -223,8 +223,26 @@ class Player extends AcGameObject {
     update_win() {
         if (this.playground.state === 'fighting' && this.character === 'me' && this.playground.players.length === 1) {
             this.playground.state = 'over'
+            this.update_score(2)
             this.playground.score_board.win()
         }
+    }
+
+    // 更新得分
+    update_score(score) {
+        let outer = this
+        let username = this.playground.root.menu.username
+        $.ajax({
+            url: "https://app4230.acapp.acwing.com.cn/playground/score/",
+            type: "post",
+            headers: {
+                'Authorization': "Bearer " + this.playground.root.access,
+            },
+            data: {
+                username,
+                score
+            }
+        })
     }
 
     // 更新技能时间
@@ -325,7 +343,8 @@ class Player extends AcGameObject {
 
     on_destroy() {
         if (this.character === "me" && this.playground.state === "fighting") {
-            this.playground.state = "over";
+            this.playground.state = "over"
+            this.update_score(-1)
             this.playground.score_board.lose()
         }
 

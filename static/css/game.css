@@ -130,6 +130,26 @@
     user-select: none;
 }
 
+.ac-game-menu-score {
+    position: absolute;
+    top: 10%;
+    left: 60%;
+    color: white;
+    height: 4vh;
+    width: 30vw;
+    color: white;
+    font-size: 2vh;
+    font-style: italic;
+    text-align: center;
+    line-height: 4vh;
+    display: table-cell;
+    vertical-align:middle;
+    background-color: rgba(39,21,28, 0.6);
+    border-radius: 10px;
+    letter-spacing: 0.8vw;
+    cursor: pointer;
+}
+
 .ac-game-menu-field {
     width: 20vw;
     position: relative;

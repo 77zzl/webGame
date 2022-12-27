@@ -164,6 +164,7 @@ class Settings {
             success: resp => {
                 if (resp.result == "success") {
                     this.username = resp.username
+                    this.score = resp.score
                     this.hide()
                     this.root.menu.show()
                 } else {

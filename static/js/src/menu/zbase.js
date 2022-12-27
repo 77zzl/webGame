@@ -1,7 +1,8 @@
 // 菜单界面
 class AcGameMenu {
     constructor(root) {
-        this.root = root;
+        this.root = root
+        this.username = ""
         this.$menu = $(`
 <div class="ac-game-menu">
     <div class="ac-game-menu-field">
@@ -17,6 +18,7 @@ class AcGameMenu {
             退出
         </div>
     </div>
+    <div class="ac-game-menu-score"></div>
     <div class="ac-game-menu-footer">
         <a href="https://beian.miit.gov.cn">icp</a>
     </div>
@@ -27,12 +29,32 @@ class AcGameMenu {
         this.$single_mode = this.$menu.find('.ac-game-menu-field-item-single-mode');
         this.$multi_mode = this.$menu.find('.ac-game-menu-field-item-multi-mode');
         this.$settings = this.$menu.find('.ac-game-menu-field-item-settings');
+        this.$score = this.$menu.find('.ac-game-menu-score')
 
         this.start();
     }
 
     start() {
         this.add_listening_events();
+    }
+
+    update_score() {
+        this.root.access = window.localStorage.getItem("access")
+        $.ajax({
+            url:"https://app4230.acapp.acwing.com.cn/settings/getinfo/",
+            type: "get",
+            headers: {
+                'Authorization': "Bearer " + this.root.access,
+            },
+            success: resp => {
+                if (resp.result == "success") {
+                    this.username = resp.username
+                    this.$score.empty()
+                    this.$score.append('My Score: ' + resp.score)
+                }
+            }
+        })
+
     }
 
     add_listening_events() {
@@ -52,6 +74,7 @@ class AcGameMenu {
 
     show() {  // 显示menu界面
         this.$menu.show();
+        this.update_score()
     }
 
     hide() {  // 关闭menu界面

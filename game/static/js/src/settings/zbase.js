@@ -109,7 +109,8 @@ class Settings {
         if (!this.root.refresh) {
             this.root.refresh = window.localStorage.getItem("refresh")
         }
-        this.refresh_jwt_token()
+        this.refresh_at_start()
+        this.access_update()
         this.add_listening_events()
     }
 
@@ -130,8 +131,6 @@ class Settings {
             success: resp => {
                 this.root.access = resp.access
                 window.localStorage.setItem("access", resp.access)
-                this.getinfo()
-                this.access_update()
             },
             error: () => {
                 this.login()
@@ -139,167 +138,185 @@ class Settings {
         })
     }
 
-    // todo
-    getRank() {
-        // 天梯排名
+    refresh_at_start() {
         $.ajax({
-            url: "https://app4230.acapp.acwing.com.cn/settings/ranklist/",
-            type: "get",
-            headers: {
-                'Authorization': "Bearer " + this.root.access,
-            },
-            success: resp => {
-                console.log(resp)
-            }
-        })
-    }
-
-    getinfo() {
-        $.ajax({
-            url:"https://app4230.acapp.acwing.com.cn/settings/getinfo/",
-            type: "get",
-            headers: {
-                'Authorization': "Bearer " + this.root.access,
-            },
-            success: resp => {
-                if (resp.result == "success") {
-                    this.username = resp.username
-                    this.score = resp.score
-                    this.hide()
-                    this.root.menu.show()
-                } else {
-                    this.login()
-                }
-            },
-            error: () => {
-                this.login()
-            }
-        })
-    }
-
-    login() {
-        this.$register.hide()
-        this.$login.show()
-    }
-
-    register() {
-        this.$login.hide()
-        this.$register.show()
-    }
-
-    hide() {
-        this.$settings.hide()
-    }
-
-    show() {
-        this.$settings.show()
-    }
-
-    add_listening_events() {
-        let outer = this
-        this.add_listening_events_login()
-        this.add_listening_events_register()
-        this.$acwing_login.click(function() {
-            outer.acwing_login();
-        });
-    }
-
-    add_listening_events_login() {
-        let outer = this
-        this.$login_register.click(function() {
-            outer.register()
-        })
-        this.$login_submit.click(function() {
-            outer.login_on_remote()
-        })
-    }
-
-    add_listening_events_register() {
-        let outer = this
-        this.$register_login.click(function() {
-            outer.login()
-        })
-        this.$register_submit.click(function() {
-            outer.register_on_remote()
-        })
-    }
-
-    // 向服务器发起请求acwing授权登陆
-    acwing_login() {
-        $.ajax({
-            url: "https://app4230.acapp.acwing.com.cn/settings/acwing/web/apply_code",
-            type: "GET",
-            success: function(resp) {
-                // 重定向到服务器返回的网址
-                if (resp.result === "success") {
-                    window.location.replace(resp.apply_code_url)
-                }
-            }
-        })
-    }
-
-    login_on_remote(username, password) {
-        let storage = window.localStorage
-        username = username || this.$login_username.val()
-        password = password || this.$login_password.val()
-        this.$login_error_message.empty()
-
-        $.ajax({
-            url: "https://app4230.acapp.acwing.com.cn/settings/token/",
+            url: "https://app4230.acapp.acwing.com.cn/settings/token/refresh/",
             type: "post",
             data: {
-                username: username,
-                password: password
+                refresh: this.root.refresh,
             },
             success: resp => {
                 this.root.access = resp.access
-                this.root.refresh = resp.refresh
-
-                // 存入本地缓存
-                storage.setItem("access" ,resp.access)
-                storage.setItem("refresh", resp.refresh)
-
-                this.refresh_jwt_token()
+                window.localStorage.setItem("access", resp.access)
                 this.getinfo()
             },
             error: () => {
-                this.$login_error_message.html("用户名或密码错误")
+                this.login()
             }
         })
     }
 
-    register_on_remote() {
-        let username = this.$register_username.val()
-        let password = this.$register_password.val()
-        let password_confirm = this.$register_password_confirm.val()
-        this.$register_error_message.empty()
-
-        $.ajax({
-            url: "https://app4230.acapp.acwing.com.cn/settings/register/",
-            type: "post",
-            data: {
-                username,
-                password,
-                password_confirm
-            },
-            success: resp => {
-                if (resp.result == 'success') {
-                    this.login_on_remote(username, password)
-                } else {
-                    this.$register_error_message.html(resp.result)
+        // todo
+        getRank() {
+            // 天梯排名
+            $.ajax({
+                url: "https://app4230.acapp.acwing.com.cn/settings/ranklist/",
+                type: "get",
+                headers: {
+                    'Authorization': "Bearer " + this.root.access,
+                },
+                success: resp => {
+                    console.log(resp)
                 }
-            }
-        })
+            })
+        }
+
+        getinfo() {
+            $.ajax({
+                url:"https://app4230.acapp.acwing.com.cn/settings/getinfo/",
+                type: "get",
+                headers: {
+                    'Authorization': "Bearer " + this.root.access,
+                },
+                success: resp => {
+                    if (resp.result == "success") {
+                        this.username = resp.username
+                        this.score = resp.score
+                        this.hide()
+                        this.root.menu.show()
+                    } else {
+                        this.login()
+                    }
+                },
+                error: () => {
+                    this.login()
+                }
+            })
+        }
+
+        login() {
+            this.$register.hide()
+            this.$login.show()
+        }
+
+        register() {
+            this.$login.hide()
+            this.$register.show()
+        }
+
+        hide() {
+            this.$settings.hide()
+        }
+
+        show() {
+            this.$settings.show()
+        }
+
+        add_listening_events() {
+            let outer = this
+            this.add_listening_events_login()
+            this.add_listening_events_register()
+            this.$acwing_login.click(function() {
+                outer.acwing_login();
+            });
+        }
+
+        add_listening_events_login() {
+            let outer = this
+            this.$login_register.click(function() {
+                outer.register()
+            })
+            this.$login_submit.click(function() {
+                outer.login_on_remote()
+            })
+        }
+
+        add_listening_events_register() {
+            let outer = this
+            this.$register_login.click(function() {
+                outer.login()
+            })
+            this.$register_submit.click(function() {
+                outer.register_on_remote()
+            })
+        }
+
+        // 向服务器发起请求acwing授权登陆
+        acwing_login() {
+            $.ajax({
+                url: "https://app4230.acapp.acwing.com.cn/settings/acwing/web/apply_code",
+                type: "GET",
+                success: function(resp) {
+                    // 重定向到服务器返回的网址
+                    if (resp.result === "success") {
+                        window.location.replace(resp.apply_code_url)
+                    }
+                }
+            })
+        }
+
+        login_on_remote(username, password) {
+            let storage = window.localStorage
+            username = username || this.$login_username.val()
+            password = password || this.$login_password.val()
+            this.$login_error_message.empty()
+
+            $.ajax({
+                url: "https://app4230.acapp.acwing.com.cn/settings/token/",
+                type: "post",
+                data: {
+                    username: username,
+                    password: password
+                },
+                success: resp => {
+                    this.root.access = resp.access
+                    this.root.refresh = resp.refresh
+
+                    // 存入本地缓存
+                    storage.setItem("access" ,resp.access)
+                    storage.setItem("refresh", resp.refresh)
+
+                    this.refresh_jwt_token()
+                    this.getinfo()
+                },
+                error: () => {
+                    this.$login_error_message.html("用户名或密码错误")
+                }
+            })
+        }
+
+        register_on_remote() {
+            let username = this.$register_username.val()
+            let password = this.$register_password.val()
+            let password_confirm = this.$register_password_confirm.val()
+            this.$register_error_message.empty()
+
+            $.ajax({
+                url: "https://app4230.acapp.acwing.com.cn/settings/register/",
+                type: "post",
+                data: {
+                    username,
+                    password,
+                    password_confirm
+                },
+                success: resp => {
+                    if (resp.result == 'success') {
+                        this.login_on_remote(username, password)
+                    } else {
+                        this.$register_error_message.html(resp.result)
+                    }
+                }
+            })
+        }
+
+
+        logout_on_remote() {
+            let storage = window.localStorage
+            storage.removeItem("access")
+            storage.removeItem("refresh")
+            this.root.access = ""
+            this.root.refresh = ""
+            location.href = "/"
+        }
+
     }
-
-
-    logout_on_remote() {
-        let storage = window.localStorage
-        storage.removeItem("access")
-        storage.removeItem("refresh")
-        this.root.access = ""
-        this.root.refresh = ""
-        location.href = "/"
-    }
-
-}

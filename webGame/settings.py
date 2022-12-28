@@ -133,7 +133,7 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-ROOM_CAPACITY = 3
+ROOM_CAPACITY = 2
 
 ASGI_APPLICATION = 'webGame.asgi.application'
 CHANNEL_LAYERS = {

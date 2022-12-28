@@ -177,6 +177,55 @@
     transition: 100ms;
 }
 
+.ac-game-menu-choose {
+    width: 50vw;
+    height: 60vh;
+    position: relative;
+    top: 5%;
+    left: 43%;
+    background-color: rgba(39,21,28, 0.6);
+    border-radius: 10px;
+}
+
+.ac-game-menu-choose-nums {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.ac-game-menu-choose-nums-items {
+    color: white;
+    font-size: 3vh;
+    font-style: italic;
+    padding-top: 5vh;
+    height: 5vh;
+}
+
+.ac-game-menu-choose-nums-items:hover {
+    transform: scale(1.5);
+    transition: 100ms;
+}
+
+.ac-game-menu-choose-hero {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-around;
+    margin: 12vh 0vh;
+}
+
+.ac-game-menu-choose-hero-items {
+    margin-bottom: 5vh;
+    border-radius: 50%;
+    width: 6vh;
+    height: 6vh;
+}
+
+.ac-game-menu-choose-hero-items:hover {
+    transform: scale(1.2);
+    transition: 100ms;
+    border: 1vh solid hsla(0, 0%, 100%, .5);
+}
+
 .ac-game-playground {
     width: 100%;
     height: 100%;
@@ -302,7 +351,7 @@
 .ac-game-quit {
     width: 20vw;
     position: absolute;
-    top: 60%;
+    top: 65%;
     left: 42.5%;
 }
 

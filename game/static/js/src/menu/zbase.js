@@ -35,6 +35,8 @@ class AcGameMenu {
     }
 
     start() {
+        // 先放这里
+        this.choose = new Choose(this)
         this.add_listening_events();
     }
 

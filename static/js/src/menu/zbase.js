@@ -31,12 +31,13 @@ class AcGameMenu {
         this.$settings = this.$menu.find('.ac-game-menu-field-item-settings');
         this.$score = this.$menu.find('.ac-game-menu-score')
 
+        this.choose = new Choose(this)
+        this.showChoose = false
+
         this.start();
     }
 
     start() {
-        // 先放这里
-        this.choose = new Choose(this)
         this.add_listening_events();
     }
 
@@ -62,12 +63,15 @@ class AcGameMenu {
     add_listening_events() {
         let outer = this;
         this.$single_mode.click(function(){
-            outer.hide();
-            outer.root.playground.show("single mode");
+            if (outer.showChoose)
+                outer.choose.hide()
+            else
+                outer.choose.show()
+            outer.showChoose = !outer.showChoose
         });
         this.$multi_mode.click(function(){
             outer.hide();
-            outer.root.playground.show("multi mode");
+            outer.root.playground.show("multi mode", 1, 3);
         });
         this.$settings.click(function(){
             outer.root.settings.logout_on_remote()

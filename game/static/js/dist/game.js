@@ -1,26 +1,110 @@
 class Choose {
     constructor(menu) {
         this.menu = menu
+        this.selected = 1
+
         this.$choose = $(`
             <div class="ac-game-menu-choose">
                 <div class="ac-game-menu-choose-nums">
-                    <div class="ac-game-menu-choose-nums-items">1 v 1</div>
-                    <div class="ac-game-menu-choose-nums-items">1 v 3</div>
-                    <div class="ac-game-menu-choose-nums-items">1 v 5</div>
+                    <div class="ac-game-menu-choose-nums-items ac-game-menu-choose-nums-items-one">1 v 1</div>
+                    <div class="ac-game-menu-choose-nums-items ac-game-menu-choose-nums-items-three">1 v 3</div>
+                    <div class="ac-game-menu-choose-nums-items ac-game-menu-choose-nums-items-five">1 v 5</div>
                     </div>
                 <div class="ac-game-menu-choose-hero">
-                    <div class="ac-game-menu-choose-hero-items" style="background-color: #c7828d"></div>
-                    <div class="ac-game-menu-choose-hero-items" style="background-color: #c7bfd1"></div>
-                    <div class="ac-game-menu-choose-hero-items" style="background-color: #566791"></div>
+                    <div class="ac-game-menu-choose-hero-items ac-game-menu-choose-hero-items-fire" style="background-color: #c7828d"></div>
+                    <div class="ac-game-menu-choose-hero-items ac-game-menu-choose-hero-items-snow" style="background-color: #c7bfd1"></div>
+                    <div class="ac-game-menu-choose-hero-items ac-game-menu-choose-hero-items-ocean" style="background-color: #566791"></div>
                 </div>
                 <div class="ac-game-menu-choose-hero">
-                    <div class="ac-game-menu-choose-hero-items" style="background-color: #a0847a"></div>
-                    <div class="ac-game-menu-choose-hero-items" style="background-color: #7c9386"></div>
-                    <div class="ac-game-menu-choose-hero-items" style="background-color: #f6ca89"></div>
+                    <div class="ac-game-menu-choose-hero-items ac-game-menu-choose-hero-items-soil" style="background-color: #a0847a"></div>
+                    <div class="ac-game-menu-choose-hero-items ac-game-menu-choose-hero-items-forest" style="background-color: #7c9386"></div>
+                    <div class="ac-game-menu-choose-hero-items ac-game-menu-choose-hero-items-light" style="background-color: #f6ca89"></div>
                 </div>
             </div>
             `)
         this.menu.$menu.append(this.$choose)
+        this.$one = this.$choose.find('.ac-game-menu-choose-nums-items-one')
+        this.$three = this.$choose.find('.ac-game-menu-choose-nums-items-three')
+        this.$five = this.$choose.find('.ac-game-menu-choose-nums-items-five')
+        this.$fire = this.$choose.find('.ac-game-menu-choose-hero-items-fire')
+        this.$snow = this.$choose.find('.ac-game-menu-choose-hero-items-snow')
+        this.$ocean = this.$choose.find('.ac-game-menu-choose-hero-items-ocean')
+        this.$soil = this.$choose.find('.ac-game-menu-choose-hero-items-soil')
+        this.$forest = this.$choose.find('.ac-game-menu-choose-hero-items-forest')
+        this.$light = this.$choose.find('.ac-game-menu-choose-hero-items-light')
+
+        this.hide()
+        this.start()
+    }
+
+    start() {
+        this.add_listening_events()
+    }
+
+    add_listening_events() {
+        let outer = this
+        this.$one.click(function() {
+            if (outer.selected === 3)
+                outer.$three.removeClass("selected")
+            else if (outer.selected === 5)
+                outer.$five.removeClass("selected")
+            outer.$one.addClass("selected")
+            outer.selected = 1
+        })
+        this.$three.click(function() {
+            if (outer.selected === 1)
+                outer.$one.removeClass("selected")
+            else if (outer.selected === 5)
+                outer.$five.removeClass("selected")
+            outer.$three.addClass("selected")
+            outer.selected = 3
+        })
+        this.$five.click(function() {
+            if (outer.selected === 3)
+                outer.$three.removeClass("selected")
+            else if (outer.selected === 1)
+                outer.$one.removeClass("selected")
+            outer.$five.addClass("selected")
+            outer.selected = 5
+        })
+        this.$fire.click(function() {
+            outer.hide()
+            outer.menu.hide()
+            outer.menu.root.playground.show("single mode", 0, outer.selected)
+        })
+        this.$snow.click(function() {
+            outer.hide()
+            outer.menu.hide()
+            outer.menu.root.playground.show("single mode", 1, outer.selected)
+        })
+        this.$ocean.click(function() {
+            outer.hide()
+            outer.menu.hide()
+            outer.menu.root.playground.show("single mode", 2, outer.selected)
+        })
+        this.$soil.click(function() {
+            outer.hide()
+            outer.menu.hide()
+            outer.menu.root.playground.show("single mode", 3, outer.selected)
+        })
+        this.$forest.click(function() {
+            outer.hide()
+            outer.menu.hide()
+            outer.menu.root.playground.show("single mode", 4, outer.selected)
+        })
+        this.$light.click(function() {
+            outer.hide()
+            outer.menu.hide()
+            outer.menu.root.playground.show("single mode", 5, outer.selected)
+        })
+    }
+
+    show() {
+        this.$choose.show()
+    }
+
+    hide() {
+        this.$choose.hide()
     }
 }
 // 菜单界面
@@ -56,12 +140,13 @@ class AcGameMenu {
         this.$settings = this.$menu.find('.ac-game-menu-field-item-settings');
         this.$score = this.$menu.find('.ac-game-menu-score')
 
+        this.choose = new Choose(this)
+        this.showChoose = false
+
         this.start();
     }
 
     start() {
-        // 先放这里
-        this.choose = new Choose(this)
         this.add_listening_events();
     }
 
@@ -87,12 +172,15 @@ class AcGameMenu {
     add_listening_events() {
         let outer = this;
         this.$single_mode.click(function(){
-            outer.hide();
-            outer.root.playground.show("single mode");
+            if (outer.showChoose)
+                outer.choose.hide()
+            else
+                outer.choose.show()
+            outer.showChoose = !outer.showChoose
         });
         this.$multi_mode.click(function(){
             outer.hide();
-            outer.root.playground.show("multi mode");
+            outer.root.playground.show("multi mode", 1, 3);
         });
         this.$settings.click(function(){
             outer.root.settings.logout_on_remote()
@@ -398,9 +486,13 @@ class Player extends AcGameObject {
 
     start() {
         this.playground.player_count ++;
-        this.playground.notice_board.write("匹配中");
+        this.playground.notice_board.write("匹配中")
 
-        if (this.playground.player_count >= 3) {
+        if (this.playground.mode === "multi mode" && this.playground.player_count >= 3) {
+            this.playground.state = "fighting"
+            this.playground.notice_board.write("Fighting")
+        }
+        if (this.playground.mode === "single mode" && this.playground.player_count > this.playground.num) {
             this.playground.state = "fighting"
             this.playground.notice_board.write("Fighting")
         }
@@ -1087,6 +1179,8 @@ class AcGamePlayground {
         this.hide();
         this.root.$ac_game.append(this.$playground);
 
+        this.heros = ['#c7828d', '#c7bfd1', '#566791', '#a0847a', '#7c9386', '#f6ca89']
+
         this.start();
     }
 
@@ -1113,7 +1207,7 @@ class AcGamePlayground {
         if (this.game_map) this.game_map.resize();
     }
 
-    show(mode) {  // 打开playground界面
+    show(mode, hero, num) {  // 打开playground界面
         let outer = this;
 
         this.$playground.show();
@@ -1124,7 +1218,12 @@ class AcGamePlayground {
         this.game_map.$canvas.focus()
 
         // 记录当前模式
-        this.mode = mode;
+        this.mode = mode
+        // 记录所选英雄
+        this.hero = hero
+        // 记录对战人数
+        this.num = num
+
         // 记录当前游戏状态
         // waiting -> fighting -> over
         this.state = "waiting"
@@ -1136,15 +1235,11 @@ class AcGamePlayground {
         // 创建用户列表
         this.players = []
         // 先添加自己
-        this.players.push(new Player(this, this.width / 2 / this.scale, 0.5, 0.05, "white", 0.15, "me"));
+        this.players.push(new Player(this, this.width / 2 / this.scale, 0.5, 0.05, this.heros[hero], 0.15, "me"));
         this.quit_board = new QuitBoard(this)
 
         if (mode === "single mode") { // 针对单人模式生成人机
-            let colors = ["#9b95c9", "#78cdd1", "#9d9087", "#ac6767", "#73b9a2", "#656565"];
-            for (let i = 1; i < 6; i ++ ) {
-                this.players.push(new Player(this, this.width / 2 / this.scale, 0.5, 0.05, colors[i], 0.15, "robot"));
-            }
-
+            this.create_robot(this.num, this.hero)
         } else if (mode === "multi mode") { // 针对多人模式开启会话
             this.chat_field = new ChatField(this)
             this.mps = new MultiPlayerSocket(this)
@@ -1154,6 +1249,18 @@ class AcGamePlayground {
             this.mps.ws.onopen = function() {
                 outer.mps.send_create_player(outer.root.settings.username, "")
             }
+        }
+    }
+
+    create_robot(num, myHero) {
+        let i = Math.floor(Math.random() * 6)
+        let n = 0
+        while (n < num) {
+            if (i === myHero || i >= this.heros.length)
+                i = (i + 1) % this.heros.length
+            this.players.push(new Player(this, this.width / 2 / this.scale, 0.5, 0.05, this.heros[i], 0.15, "robot"))
+            n ++
+            i ++
         }
     }
 

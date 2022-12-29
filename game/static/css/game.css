@@ -195,8 +195,9 @@
 
 .ac-game-menu-choose-nums-items {
     color: white;
-    font-size: 3vh;
+    font-size: 5vh;
     font-style: italic;
+    font-family: "Gill Sans", sans-serif;
     padding-top: 5vh;
     height: 5vh;
 }
@@ -204,6 +205,10 @@
 .ac-game-menu-choose-nums-items:hover {
     transform: scale(1.5);
     transition: 100ms;
+}
+
+.selected {
+    transform: scale(1.5);
 }
 
 .ac-game-menu-choose-hero {

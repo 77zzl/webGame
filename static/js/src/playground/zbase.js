@@ -6,6 +6,8 @@ class AcGamePlayground {
         this.hide();
         this.root.$ac_game.append(this.$playground);
 
+        this.heros = ['#c7828d', '#c7bfd1', '#566791', '#a0847a', '#7c9386', '#f6ca89']
+
         this.start();
     }
 
@@ -32,7 +34,7 @@ class AcGamePlayground {
         if (this.game_map) this.game_map.resize();
     }
 
-    show(mode) {  // 打开playground界面
+    show(mode, hero, num) {  // 打开playground界面
         let outer = this;
 
         this.$playground.show();
@@ -43,7 +45,12 @@ class AcGamePlayground {
         this.game_map.$canvas.focus()
 
         // 记录当前模式
-        this.mode = mode;
+        this.mode = mode
+        // 记录所选英雄
+        this.hero = hero
+        // 记录对战人数
+        this.num = num
+
         // 记录当前游戏状态
         // waiting -> fighting -> over
         this.state = "waiting"
@@ -55,15 +62,11 @@ class AcGamePlayground {
         // 创建用户列表
         this.players = []
         // 先添加自己
-        this.players.push(new Player(this, this.width / 2 / this.scale, 0.5, 0.05, "white", 0.15, "me"));
+        this.players.push(new Player(this, this.width / 2 / this.scale, 0.5, 0.05, this.heros[hero], 0.15, "me"));
         this.quit_board = new QuitBoard(this)
 
         if (mode === "single mode") { // 针对单人模式生成人机
-            let colors = ["#9b95c9", "#78cdd1", "#9d9087", "#ac6767", "#73b9a2", "#656565"];
-            for (let i = 1; i < 6; i ++ ) {
-                this.players.push(new Player(this, this.width / 2 / this.scale, 0.5, 0.05, colors[i], 0.15, "robot"));
-            }
-
+            this.create_robot(this.num, this.hero)
         } else if (mode === "multi mode") { // 针对多人模式开启会话
             this.chat_field = new ChatField(this)
             this.mps = new MultiPlayerSocket(this)
@@ -73,6 +76,18 @@ class AcGamePlayground {
             this.mps.ws.onopen = function() {
                 outer.mps.send_create_player(outer.root.settings.username, "")
             }
+        }
+    }
+
+    create_robot(num, myHero) {
+        let i = Math.floor(Math.random() * 6)
+        let n = 0
+        while (n < num) {
+            if (i === myHero || i >= this.heros.length)
+                i = (i + 1) % this.heros.length
+            this.players.push(new Player(this, this.width / 2 / this.scale, 0.5, 0.05, this.heros[i], 0.15, "robot"))
+            n ++
+            i ++
         }
     }
 

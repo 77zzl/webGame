@@ -70,31 +70,37 @@ class Choose {
         this.$fire.click(function() {
             outer.hide()
             outer.menu.hide()
+            outer.menu.showChoose = false
             outer.menu.root.playground.show("single mode", 0, outer.selected)
         })
         this.$snow.click(function() {
             outer.hide()
             outer.menu.hide()
+            outer.menu.showChoose = false
             outer.menu.root.playground.show("single mode", 1, outer.selected)
         })
         this.$ocean.click(function() {
             outer.hide()
             outer.menu.hide()
+            outer.menu.showChoose = false
             outer.menu.root.playground.show("single mode", 2, outer.selected)
         })
         this.$soil.click(function() {
             outer.hide()
             outer.menu.hide()
+            outer.menu.showChoose = false
             outer.menu.root.playground.show("single mode", 3, outer.selected)
         })
         this.$forest.click(function() {
             outer.hide()
             outer.menu.hide()
+            outer.menu.showChoose = false
             outer.menu.root.playground.show("single mode", 4, outer.selected)
         })
         this.$light.click(function() {
             outer.hide()
             outer.menu.hide()
+            outer.menu.showChoose = false
             outer.menu.root.playground.show("single mode", 5, outer.selected)
         })
     }
@@ -1256,8 +1262,12 @@ class AcGamePlayground {
         let i = Math.floor(Math.random() * 6)
         let n = 0
         while (n < num) {
-            if (i === myHero || i >= this.heros.length)
+            console.log('i start:', i)
+            if (i === myHero)
                 i = (i + 1) % this.heros.length
+            if (i >= this.heros.length)
+                i = 0
+            console.log('i end:', i)
             this.players.push(new Player(this, this.width / 2 / this.scale, 0.5, 0.05, this.heros[i], 0.15, "robot"))
             n ++
             i ++

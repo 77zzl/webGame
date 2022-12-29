@@ -70,31 +70,37 @@ class Choose {
         this.$fire.click(function() {
             outer.hide()
             outer.menu.hide()
+            outer.menu.showChoose = false
             outer.menu.root.playground.show("single mode", 0, outer.selected)
         })
         this.$snow.click(function() {
             outer.hide()
             outer.menu.hide()
+            outer.menu.showChoose = false
             outer.menu.root.playground.show("single mode", 1, outer.selected)
         })
         this.$ocean.click(function() {
             outer.hide()
             outer.menu.hide()
+            outer.menu.showChoose = false
             outer.menu.root.playground.show("single mode", 2, outer.selected)
         })
         this.$soil.click(function() {
             outer.hide()
             outer.menu.hide()
+            outer.menu.showChoose = false
             outer.menu.root.playground.show("single mode", 3, outer.selected)
         })
         this.$forest.click(function() {
             outer.hide()
             outer.menu.hide()
+            outer.menu.showChoose = false
             outer.menu.root.playground.show("single mode", 4, outer.selected)
         })
         this.$light.click(function() {
             outer.hide()
             outer.menu.hide()
+            outer.menu.showChoose = false
             outer.menu.root.playground.show("single mode", 5, outer.selected)
         })
     }

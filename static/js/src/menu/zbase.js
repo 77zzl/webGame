@@ -7,11 +7,11 @@ class AcGameMenu {
 <div class="ac-game-menu">
     <div class="ac-game-menu-field">
         <div class="ac-game-menu-field-item ac-game-menu-field-item-single-mode">
-            单人模式
+            单机模式
         </div>
         <br>
         <div class="ac-game-menu-field-item ac-game-menu-field-item-multi-mode">
-            多人模式
+            联机模式
         </div>
         <br>
         <div class="ac-game-menu-field-item ac-game-menu-field-item-settings">
@@ -71,7 +71,7 @@ class AcGameMenu {
         });
         this.$multi_mode.click(function(){
             outer.hide();
-            outer.root.playground.show("multi mode", 1, 3);
+            outer.root.playground.show("multi mode", 0, 3);
         });
         this.$settings.click(function(){
             outer.root.settings.logout_on_remote()

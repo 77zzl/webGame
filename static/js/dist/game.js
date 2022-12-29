@@ -122,11 +122,11 @@ class AcGameMenu {
 <div class="ac-game-menu">
     <div class="ac-game-menu-field">
         <div class="ac-game-menu-field-item ac-game-menu-field-item-single-mode">
-            单人模式
+            单机模式
         </div>
         <br>
         <div class="ac-game-menu-field-item ac-game-menu-field-item-multi-mode">
-            多人模式
+            联机模式
         </div>
         <br>
         <div class="ac-game-menu-field-item ac-game-menu-field-item-settings">
@@ -186,7 +186,7 @@ class AcGameMenu {
         });
         this.$multi_mode.click(function(){
             outer.hide();
-            outer.root.playground.show("multi mode", 1, 3);
+            outer.root.playground.show("multi mode", 0, 3);
         });
         this.$settings.click(function(){
             outer.root.settings.logout_on_remote()
@@ -527,32 +527,34 @@ class Player extends AcGameObject {
             const rect = outer.ctx.canvas.getBoundingClientRect();
             let tx = (e.clientX - rect.left) / outer.playground.scale
             let ty = (e.clientY - rect.top) / outer.playground.scale
-            if (e.which === 3) {
-                outer.move_to(tx, ty);
-                if (outer.playground.mode === "multi mode") {
-                    outer.playground.mps.send_move_to(tx, ty)
-                }
-            } else if (e.which === 1) {
-                outer.playground.quit_board.hide()
-                if (outer.cur_skill === "fireball") {
-                    if (outer.fireball_coldtime > outer.eps)
-                        return false;
 
-                    let fireball = outer.shoot_fireball(tx, ty);
-                    if (outer.playground.mode === "multi mode") {
-                        outer.playground.mps.send_shoot_fireball(tx, ty, fireball.uuid)
-                    }
-                } else if (outer.cur_skill === "blink") {
+            if (e.which === 3) {    // 右键
+                if (outer.cur_skill === "blink") {
                     if (outer.blink_coldtime > outer.eps)
                         return false;
-
                     outer.blink(tx, ty)
+                    // 如果是联机模式则同步
                     if (outer.playground.mode === "multi mode") {
                         outer.playground.mps.send_blink(tx, ty)
                     }
+                } else {
+                    outer.move_to(tx, ty);
+                    if (outer.playground.mode === "multi mode") {
+                        outer.playground.mps.send_move_to(tx, ty)
+                    }
                 }
-                outer.cur_skill = null;
+            } else if (e.which === 1) { // 左键
+                outer.playground.quit_board.hide()
+                if (outer.fireball_coldtime > outer.eps)
+                    return false;
+                let fireball = outer.shoot_fireball(tx, ty);
+
+                // 如果是联机模式则同步
+                if (outer.playground.mode === "multi mode") {
+                    outer.playground.mps.send_shoot_fireball(tx, ty, fireball.uuid)
+                }
             }
+            outer.cur_skill = null;
         });
 
         // 监听键盘
@@ -571,13 +573,9 @@ class Player extends AcGameObject {
             // 战斗开始后监听技能
             if (outer.playground.state !== "fighting")
                 return true;
-            if (e.which === 81) {   // q发射火球
-                if (outer.fireball_coldtime > outer.eps)
-                    return true;
 
-                outer.cur_skill = "fireball";
-                return false;
-            } else if (e.which === 70) {    //  f闪现
+            // 空格闪现
+            if (e.which === 32) {
                 if (outer.blink_coldtime > outer.eps)
                     return true;
 
@@ -1262,12 +1260,10 @@ class AcGamePlayground {
         let i = Math.floor(Math.random() * 6)
         let n = 0
         while (n < num) {
-            console.log('i start:', i)
+            if (i >= this.heros.length)
+                i = i % this.heros.length
             if (i === myHero)
                 i = (i + 1) % this.heros.length
-            if (i >= this.heros.length)
-                i = 0
-            console.log('i end:', i)
             this.players.push(new Player(this, this.width / 2 / this.scale, 0.5, 0.05, this.heros[i], 0.15, "robot"))
             n ++
             i ++

@@ -15,7 +15,7 @@ class AcGameMenu {
         </div>
         <br>
         <div class="ac-game-menu-field-item ac-game-menu-field-item-settings">
-            退出
+            更多
         </div>
     </div>
     <div class="ac-game-menu-score"></div>
@@ -32,6 +32,8 @@ class AcGameMenu {
         this.$score = this.$menu.find('.ac-game-menu-score')
 
         this.choose = new Choose(this)
+        this.preferences = new Preferences(this)
+        this.showPreferences = false
         this.showChoose = false
 
         this.start();
@@ -63,6 +65,8 @@ class AcGameMenu {
     add_listening_events() {
         let outer = this;
         this.$single_mode.click(function(){
+            outer.showPreferences = false
+            outer.preferences.hide()
             if (outer.showChoose)
                 outer.choose.hide()
             else
@@ -74,7 +78,13 @@ class AcGameMenu {
             outer.root.playground.show("multi mode", 0, 3);
         });
         this.$settings.click(function(){
-            outer.root.settings.logout_on_remote()
+            outer.showChoose = false
+            outer.choose.hide()
+            if (outer.showPreferences)
+                outer.preferences.hide()
+            else
+                outer.preferences.show()
+            outer.showPreferences = !outer.showPreferences
         });
     }
 

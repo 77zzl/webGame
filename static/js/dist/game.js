@@ -113,6 +113,75 @@ class Choose {
         this.$choose.hide()
     }
 }
+class Preferences {
+    constructor(menu) {
+        this.menu = menu
+
+        this.$preferences = $(`
+<div class="ac-game-menu-preferences">
+    <div class="ac-game-menu-preferences-help">
+        <div class="ac-game-menu-preferences-help-head">Tutorials</div>
+        <div class="ac-game-menu-preferences-help-skill">
+            <div class="ac-game-menu-preferences-help-skill-items">
+                <div class="ac-game-menu-preferences-help-skill-img">
+                    <img src="https://app4230.acapp.acwing.com.cn/static/image/menu/left.png"/>
+                    鼠标左键
+                </div>
+                <text>攻击</text>
+            </div>
+            <div class="ac-game-menu-preferences-help-skill-items">
+                <div class="ac-game-menu-preferences-help-skill-img">
+                    <img src="https://app4230.acapp.acwing.com.cn/static/image/menu/right.png"/>
+                    鼠标右键
+                </div>
+                <text>移动</text>
+            </div>
+            <div class="ac-game-menu-preferences-help-skill-items">
+                <div class="ac-game-menu-preferences-help-skill-img">
+                    <img src="https://app4230.acapp.acwing.com.cn/static/image/menu/space.png"/>
+                    键盘空格
+                </div>
+                <div class="ac-game-menu-preferences-help-skill-img" style="margin:0vh;">
+                    <img src="https://app4230.acapp.acwing.com.cn/static/image/menu/plus.png" style="width:2vh;height:2vh;"/>
+                    &nbsp;
+                </div>
+                <div class="ac-game-menu-preferences-help-skill-img">
+                    <img src="https://app4230.acapp.acwing.com.cn/static/image/menu/right.png"/>
+                    鼠标右键
+                </div>
+                <text>闪现</text>
+            </div>
+        </div>
+    </div>
+    <div class="ac-game-menu-preferences-button">LOGOUT</div>
+</div>
+            `)
+        this.menu.$menu.append(this.$preferences)
+        this.$logout = this.$preferences.find('.ac-game-menu-preferences-button')
+
+        this.hide()
+        this.start()
+    }
+
+    start() {
+        this.add_listening_events()
+    }
+
+    add_listening_events() {
+        let outer = this
+        this.$logout.click(function() {
+            outer.menu.root.settings.logout_on_remote()
+        })
+    }
+
+    show() {
+        this.$preferences.show()
+    }
+
+    hide() {
+        this.$preferences.hide()
+    }
+}
 // 菜单界面
 class AcGameMenu {
     constructor(root) {
@@ -130,7 +199,7 @@ class AcGameMenu {
         </div>
         <br>
         <div class="ac-game-menu-field-item ac-game-menu-field-item-settings">
-            退出
+            更多
         </div>
     </div>
     <div class="ac-game-menu-score"></div>
@@ -147,6 +216,8 @@ class AcGameMenu {
         this.$score = this.$menu.find('.ac-game-menu-score')
 
         this.choose = new Choose(this)
+        this.preferences = new Preferences(this)
+        this.showPreferences = false
         this.showChoose = false
 
         this.start();
@@ -178,6 +249,8 @@ class AcGameMenu {
     add_listening_events() {
         let outer = this;
         this.$single_mode.click(function(){
+            outer.showPreferences = false
+            outer.preferences.hide()
             if (outer.showChoose)
                 outer.choose.hide()
             else
@@ -189,7 +262,13 @@ class AcGameMenu {
             outer.root.playground.show("multi mode", 0, 3);
         });
         this.$settings.click(function(){
-            outer.root.settings.logout_on_remote()
+            outer.showChoose = false
+            outer.choose.hide()
+            if (outer.showPreferences)
+                outer.preferences.hide()
+            else
+                outer.preferences.show()
+            outer.showPreferences = !outer.showPreferences
         });
     }
 
@@ -481,11 +560,11 @@ class Player extends AcGameObject {
             // 准备火球图标
             this.fireball_coldtime = this.FireballCD;
             this.fireball_img = new Image();
-            this.fireball_img.src = "https://cdn.acwing.com/media/article/image/2021/12/02/1_9340c86053-fireball.png";
+            this.fireball_img.src = "https://app4230.acapp.acwing.com.cn/static/image/menu/fire.png";
             // 准备闪现图标
             this.blink_coldtime = this.BlinkCD;
             this.blink_img = new Image();
-            this.blink_img.src = "https://cdn.acwing.com/media/article/image/2021/12/02/1_daccabdc53-blink.png"
+            this.blink_img.src = "https://app4230.acapp.acwing.com.cn/static/image/menu/blink.png"
 
         }
     }

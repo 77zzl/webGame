@@ -30,11 +30,11 @@ class Player extends AcGameObject {
             // 准备火球图标
             this.fireball_coldtime = this.FireballCD;
             this.fireball_img = new Image();
-            this.fireball_img.src = "https://cdn.acwing.com/media/article/image/2021/12/02/1_9340c86053-fireball.png";
+            this.fireball_img.src = "https://app4230.acapp.acwing.com.cn/static/image/menu/fire.png";
             // 准备闪现图标
             this.blink_coldtime = this.BlinkCD;
             this.blink_img = new Image();
-            this.blink_img.src = "https://cdn.acwing.com/media/article/image/2021/12/02/1_daccabdc53-blink.png"
+            this.blink_img.src = "https://app4230.acapp.acwing.com.cn/static/image/menu/blink.png"
 
         }
     }

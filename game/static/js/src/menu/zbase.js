@@ -46,7 +46,7 @@ class AcGameMenu {
     update_score() {
         this.root.access = window.localStorage.getItem("access")
         $.ajax({
-            url:"https://app4230.acapp.acwing.com.cn/settings/getinfo/",
+            url:"https://www.77zzl.top/settings/getinfo/",
             type: "get",
             headers: {
                 'Authorization': "Bearer " + this.root.access,

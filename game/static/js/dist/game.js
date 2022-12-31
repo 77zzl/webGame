@@ -124,29 +124,29 @@ class Preferences {
         <div class="ac-game-menu-preferences-help-skill">
             <div class="ac-game-menu-preferences-help-skill-items">
                 <div class="ac-game-menu-preferences-help-skill-img">
-                    <img src="https://app4230.acapp.acwing.com.cn/static/image/menu/left.png"/>
+                    <img src="https://www.77zzl.top/static/image/menu/left.png"/>
                     鼠标左键
                 </div>
                 <text>攻击</text>
             </div>
             <div class="ac-game-menu-preferences-help-skill-items">
                 <div class="ac-game-menu-preferences-help-skill-img">
-                    <img src="https://app4230.acapp.acwing.com.cn/static/image/menu/right.png"/>
+                    <img src="https://www.77zzl.top/static/image/menu/right.png"/>
                     鼠标右键
                 </div>
                 <text>移动</text>
             </div>
             <div class="ac-game-menu-preferences-help-skill-items">
                 <div class="ac-game-menu-preferences-help-skill-img">
-                    <img src="https://app4230.acapp.acwing.com.cn/static/image/menu/space.png"/>
+                    <img src="https://www.77zzl.top/static/image/menu/space.png"/>
                     键盘空格
                 </div>
                 <div class="ac-game-menu-preferences-help-skill-img" style="margin:0vh;">
-                    <img src="https://app4230.acapp.acwing.com.cn/static/image/menu/plus.png" style="width:2vh;height:2vh;"/>
+                    <img src="https://www.77zzl.top/static/image/menu/plus.png" style="width:2vh;height:2vh;"/>
                     &nbsp;
                 </div>
                 <div class="ac-game-menu-preferences-help-skill-img">
-                    <img src="https://app4230.acapp.acwing.com.cn/static/image/menu/right.png"/>
+                    <img src="https://www.77zzl.top/static/image/menu/right.png"/>
                     鼠标右键
                 </div>
                 <text>闪现</text>
@@ -230,7 +230,7 @@ class AcGameMenu {
     update_score() {
         this.root.access = window.localStorage.getItem("access")
         $.ajax({
-            url:"https://app4230.acapp.acwing.com.cn/settings/getinfo/",
+            url:"https://www.77zzl.top/settings/getinfo/",
             type: "get",
             headers: {
                 'Authorization': "Bearer " + this.root.access,
@@ -560,11 +560,11 @@ class Player extends AcGameObject {
             // 准备火球图标
             this.fireball_coldtime = this.FireballCD;
             this.fireball_img = new Image();
-            this.fireball_img.src = "https://app4230.acapp.acwing.com.cn/static/image/menu/fire.png";
+            this.fireball_img.src = "https://www.77zzl.top/static/image/menu/fire.png";
             // 准备闪现图标
             this.blink_coldtime = this.BlinkCD;
             this.blink_img = new Image();
-            this.blink_img.src = "https://app4230.acapp.acwing.com.cn/static/image/menu/blink.png"
+            this.blink_img.src = "https://www.77zzl.top/static/image/menu/blink.png"
 
         }
     }
@@ -765,7 +765,7 @@ class Player extends AcGameObject {
         let outer = this
         let username = this.playground.root.menu.username
         $.ajax({
-            url: "https://app4230.acapp.acwing.com.cn/playground/score/",
+            url: "https://www.77zzl.top/playground/score/",
             type: "post",
             headers: {
                 'Authorization': "Bearer " + this.playground.root.access,
@@ -1083,7 +1083,7 @@ class MultiPlayerSocket {
         this.playground = playground;
 
         // 建立连接
-        this.ws = new WebSocket("wss://app4230.acapp.acwing.com.cn/wss/multiplayer/?token=" + playground.root.access);
+        this.ws = new WebSocket("wss://www.77zzl.top/wss/multiplayer/?token=" + playground.root.access);
 
         this.start();
     }
@@ -1381,6 +1381,10 @@ class AcGamePlayground {
 }
 class Settings {
     constructor(root) {
+        if(window.location.host === "app4230.acapp.acwing.com.cn") {
+            window.location.replace("https://www.77zzl.top")
+        }
+
         this.root = root
         this.username = ""
 
@@ -1504,7 +1508,7 @@ class Settings {
     refresh_jwt_token() {
         // 用refresh刷新access
         $.ajax({
-            url: "https://app4230.acapp.acwing.com.cn/settings/token/refresh/",
+            url: "https://www.77zzl.top/settings/token/refresh/",
             type: "post",
             data: {
                 refresh: this.root.refresh,
@@ -1521,7 +1525,7 @@ class Settings {
 
     refresh_at_start() {
         $.ajax({
-            url: "https://app4230.acapp.acwing.com.cn/settings/token/refresh/",
+            url: "https://www.77zzl.top/settings/token/refresh/",
             type: "post",
             data: {
                 refresh: this.root.refresh,
@@ -1537,170 +1541,171 @@ class Settings {
         })
     }
 
-        // todo
-        getRank() {
-            // 天梯排名
-            $.ajax({
-                url: "https://app4230.acapp.acwing.com.cn/settings/ranklist/",
-                type: "get",
-                headers: {
-                    'Authorization': "Bearer " + this.root.access,
-                },
-                success: resp => {
-                    console.log(resp)
-                }
-            })
-        }
+    // todo
+    getRank() {
+        // 天梯排名
+        $.ajax({
+            url: "https://www.77zzl.top/settings/ranklist/",
+            type: "get",
+            headers: {
+                'Authorization': "Bearer " + this.root.access,
+            },
+            success: resp => {
+                console.log(resp)
+            }
+        })
+    }
 
-        getinfo() {
-            $.ajax({
-                url:"https://app4230.acapp.acwing.com.cn/settings/getinfo/",
-                type: "get",
-                headers: {
-                    'Authorization': "Bearer " + this.root.access,
-                },
-                success: resp => {
-                    if (resp.result == "success") {
-                        this.username = resp.username
-                        this.score = resp.score
-                        this.hide()
-                        this.root.menu.show()
-                    } else {
-                        this.login()
-                    }
-                },
-                error: () => {
+    getinfo() {
+        $.ajax({
+            url:"https://www.77zzl.top/settings/getinfo/",
+            type: "get",
+            headers: {
+                'Authorization': "Bearer " + this.root.access,
+            },
+            success: resp => {
+                if (resp.result == "success") {
+                    this.username = resp.username
+                    this.score = resp.score
+                    this.hide()
+                    this.root.menu.show()
+                } else {
                     this.login()
                 }
-            })
-        }
-
-        login() {
-            this.$register.hide()
-            this.$login.show()
-        }
-
-        register() {
-            this.$login.hide()
-            this.$register.show()
-        }
-
-        hide() {
-            this.$settings.hide()
-        }
-
-        show() {
-            this.$settings.show()
-        }
-
-        add_listening_events() {
-            let outer = this
-            this.add_listening_events_login()
-            this.add_listening_events_register()
-            this.$acwing_login.click(function() {
-                outer.acwing_login();
-            });
-        }
-
-        add_listening_events_login() {
-            let outer = this
-            this.$login_register.click(function() {
-                outer.register()
-            })
-            this.$login_submit.click(function() {
-                outer.login_on_remote()
-            })
-        }
-
-        add_listening_events_register() {
-            let outer = this
-            this.$register_login.click(function() {
-                outer.login()
-            })
-            this.$register_submit.click(function() {
-                outer.register_on_remote()
-            })
-        }
-
-        // 向服务器发起请求acwing授权登陆
-        acwing_login() {
-            $.ajax({
-                url: "https://app4230.acapp.acwing.com.cn/settings/acwing/web/apply_code",
-                type: "GET",
-                success: function(resp) {
-                    // 重定向到服务器返回的网址
-                    if (resp.result === "success") {
-                        window.location.replace(resp.apply_code_url)
-                    }
-                }
-            })
-        }
-
-        login_on_remote(username, password) {
-            let storage = window.localStorage
-            username = username || this.$login_username.val()
-            password = password || this.$login_password.val()
-            this.$login_error_message.empty()
-
-            $.ajax({
-                url: "https://app4230.acapp.acwing.com.cn/settings/token/",
-                type: "post",
-                data: {
-                    username: username,
-                    password: password
-                },
-                success: resp => {
-                    this.root.access = resp.access
-                    this.root.refresh = resp.refresh
-
-                    // 存入本地缓存
-                    storage.setItem("access" ,resp.access)
-                    storage.setItem("refresh", resp.refresh)
-
-                    this.refresh_jwt_token()
-                    this.getinfo()
-                },
-                error: () => {
-                    this.$login_error_message.html("用户名或密码错误")
-                }
-            })
-        }
-
-        register_on_remote() {
-            let username = this.$register_username.val()
-            let password = this.$register_password.val()
-            let password_confirm = this.$register_password_confirm.val()
-            this.$register_error_message.empty()
-
-            $.ajax({
-                url: "https://app4230.acapp.acwing.com.cn/settings/register/",
-                type: "post",
-                data: {
-                    username,
-                    password,
-                    password_confirm
-                },
-                success: resp => {
-                    if (resp.result == 'success') {
-                        this.login_on_remote(username, password)
-                    } else {
-                        this.$register_error_message.html(resp.result)
-                    }
-                }
-            })
-        }
-
-
-        logout_on_remote() {
-            let storage = window.localStorage
-            storage.removeItem("access")
-            storage.removeItem("refresh")
-            this.root.access = ""
-            this.root.refresh = ""
-            location.href = "/"
-        }
-
+            },
+            error: () => {
+                this.login()
+            }
+        })
     }
+
+    login() {
+        this.$register.hide()
+        this.$login.show()
+    }
+
+    register() {
+        this.$login.hide()
+        this.$register.show()
+    }
+
+    hide() {
+        this.$settings.hide()
+    }
+
+    show() {
+        this.$settings.show()
+    }
+
+    add_listening_events() {
+        let outer = this
+        this.add_listening_events_login()
+        this.add_listening_events_register()
+        this.$acwing_login.click(function() {
+            outer.acwing_login();
+        });
+    }
+
+    add_listening_events_login() {
+        let outer = this
+        this.$login_register.click(function() {
+            outer.register()
+        })
+        this.$login_submit.click(function() {
+            outer.login_on_remote()
+        })
+    }
+
+    add_listening_events_register() {
+        let outer = this
+        this.$register_login.click(function() {
+            outer.login()
+        })
+        this.$register_submit.click(function() {
+            outer.register_on_remote()
+        })
+    }
+
+    // 向服务器发起请求acwing授权登陆
+    acwing_login() {
+        $.ajax({
+            url: "https://www.77zzl.top/settings/acwing/web/apply_code",
+            type: "GET",
+            success: function(resp) {
+                // 重定向到服务器返回的网址
+                if (resp.result === "success") {
+                    window.location.replace(resp.apply_code_url)
+                }
+            }
+        })
+    }
+
+    login_on_remote(username, password) {
+        let storage = window.localStorage
+        username = username || this.$login_username.val()
+        password = password || this.$login_password.val()
+        this.$login_error_message.empty()
+
+        $.ajax({
+            url: "https://www.77zzl.top/settings/token/",
+            type: "post",
+            data: {
+                username: username,
+                password: password
+            },
+            success: resp => {
+                this.root.access = resp.access
+                this.root.refresh = resp.refresh
+
+                // 存入本地缓存
+                storage.setItem("access" ,resp.access)
+                storage.setItem("refresh", resp.refresh)
+
+                this.refresh_jwt_token()
+                this.getinfo()
+            },
+            error: () => {
+                this.$login_error_message.html("用户名或密码错误")
+            }
+        })
+    }
+
+    register_on_remote() {
+        let username = this.$register_username.val()
+        let password = this.$register_password.val()
+        let password_confirm = this.$register_password_confirm.val()
+        this.$register_error_message.empty()
+
+        $.ajax({
+            url: "https://www.77zzl.top/settings/register/",
+            type: "post",
+            data: {
+                username,
+                password,
+                password_confirm,
+                'access': "lpqsogood"
+            },
+            success: resp => {
+                if (resp.result == 'success') {
+                    this.login_on_remote(username, password)
+                } else {
+                    this.$register_error_message.html(resp.result)
+                }
+            }
+        })
+    }
+
+
+    logout_on_remote() {
+        let storage = window.localStorage
+        storage.removeItem("access")
+        storage.removeItem("refresh")
+        this.root.access = ""
+        this.root.refresh = ""
+        location.href = "/"
+    }
+
+}
 export class AcGame {
     constructor(id, access, refresh) {
         this.id = id;

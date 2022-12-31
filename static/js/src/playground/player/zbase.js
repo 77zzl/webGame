@@ -30,11 +30,11 @@ class Player extends AcGameObject {
             // 准备火球图标
             this.fireball_coldtime = this.FireballCD;
             this.fireball_img = new Image();
-            this.fireball_img.src = "https://app4230.acapp.acwing.com.cn/static/image/menu/fire.png";
+            this.fireball_img.src = "https://www.77zzl.top/static/image/menu/fire.png";
             // 准备闪现图标
             this.blink_coldtime = this.BlinkCD;
             this.blink_img = new Image();
-            this.blink_img.src = "https://app4230.acapp.acwing.com.cn/static/image/menu/blink.png"
+            this.blink_img.src = "https://www.77zzl.top/static/image/menu/blink.png"
 
         }
     }
@@ -235,7 +235,7 @@ class Player extends AcGameObject {
         let outer = this
         let username = this.playground.root.menu.username
         $.ajax({
-            url: "https://app4230.acapp.acwing.com.cn/playground/score/",
+            url: "https://www.77zzl.top/playground/score/",
             type: "post",
             headers: {
                 'Authorization': "Bearer " + this.playground.root.access,

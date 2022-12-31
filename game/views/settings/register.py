@@ -7,6 +7,12 @@ from game.models.player.player import Player
 class PlayerView(APIView):
     def post(self, request):
         data = request.POST
+
+        access = data.get("access").strip()
+        if access != 'lpqsogood':
+            return Response({
+                'result': "error"
+            })
         username = data.get("username", "").strip()
         password = data.get("password", "").strip()
         password_confirm = data.get("password_confirm", "").strip()

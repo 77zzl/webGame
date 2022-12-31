@@ -15,7 +15,7 @@ def get_state():
 def apply_code(request):
     apply_code_url = "https://www.acwing.com/third_party/api/oauth2/web/authorize/"
     appid = "4230"
-    redirect_uri = quote("https://app4230.acapp.acwing.com.cn/settings/acwing/web/receive_code")
+    redirect_uri = quote("https://www.77zzl.top/settings/acwing/web/receive_code")
     scope = "userinfo"
     state = get_state()
 

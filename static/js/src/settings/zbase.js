@@ -79,7 +79,7 @@ class Settings {
         </div>
     </div>
     <div class="ac-game-settings-footer">
-        <a href="https://beian.miit.gov.cn">icp</a>
+        <a href="https://beian.miit.gov.cn">粤ICP备2022156726号-1</a>
     </div>
 </div>
             `)

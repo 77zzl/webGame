@@ -425,6 +425,8 @@ text {
 .ac-game-settings-footer a {
     color: #7ba0cb;
     text-decoration :none;
+    font-size: 1vh;
+    font-weight: 100;
 }
 
 .ac-game-settings-footer a:hover {
@@ -442,6 +444,8 @@ text {
 .ac-game-menu-footer a {
     color: #7ba0cb;
     text-decoration :none;
+    font-size: 1vh;
+    font-weight: 100;
 }
 
 .ac-game-menu-footer a:hover {

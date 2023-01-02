@@ -15,6 +15,8 @@ class ScoreBoard extends AcGameObject {
 
     add_listening_events() {
         let outer = this
+        if (!this.playground.game_map)
+            return
         let $canvas = this.playground.game_map.$canvas
 
         // 点击后返回菜单界面
@@ -24,7 +26,6 @@ class ScoreBoard extends AcGameObject {
         })
     }
 
-    // 胜利后显示胜利页面并允许点击后返回菜单
     win() {
         this.state = 'win'
         let outer = this
@@ -33,7 +34,6 @@ class ScoreBoard extends AcGameObject {
         }, 1000)
     }
 
-    // 失败后显示胜利页面并允许点击后返回菜单
     lose() {
         this.state = 'lose'
         let outer = this

@@ -100,6 +100,12 @@ class AcGamePlayground {
             this.players[0].destroy()
         }
 
+        // 删除胜负提示框
+        if (this.score_board) {
+            this.score_board.destroy()
+            this.score_board = null
+        }
+
         // 删除地图
         if (this.game_map) {
             this.game_map.destroy()
@@ -110,12 +116,6 @@ class AcGamePlayground {
         if (this.notice_board) {
             this.notice_board.destroy()
             this.notice_board = null
-        }
-
-        // 删除胜负提示框
-        if (this.score_board) {
-            this.score_board.destroy()
-            this.score_borad = null
         }
 
         // 清空所有html标签

@@ -1002,6 +1002,8 @@ class ScoreBoard extends AcGameObject {
 
     add_listening_events() {
         let outer = this
+        if (!this.playground.game_map)
+            return
         let $canvas = this.playground.game_map.$canvas
 
         // 点击后返回菜单界面
@@ -1011,7 +1013,6 @@ class ScoreBoard extends AcGameObject {
         })
     }
 
-    // 胜利后显示胜利页面并允许点击后返回菜单
     win() {
         this.state = 'win'
         let outer = this
@@ -1020,7 +1021,6 @@ class ScoreBoard extends AcGameObject {
         }, 1000)
     }
 
-    // 失败后显示胜利页面并允许点击后返回菜单
     lose() {
         this.state = 'lose'
         let outer = this
@@ -1497,6 +1497,12 @@ class AcGamePlayground {
             this.players[0].destroy()
         }
 
+        // 删除胜负提示框
+        if (this.score_board) {
+            this.score_board.destroy()
+            this.score_board = null
+        }
+
         // 删除地图
         if (this.game_map) {
             this.game_map.destroy()
@@ -1507,12 +1513,6 @@ class AcGamePlayground {
         if (this.notice_board) {
             this.notice_board.destroy()
             this.notice_board = null
-        }
-
-        // 删除胜负提示框
-        if (this.score_board) {
-            this.score_board.destroy()
-            this.score_borad = null
         }
 
         // 清空所有html标签
@@ -1648,6 +1648,11 @@ class Settings {
     }
 
     refresh_jwt_token() {
+        if (!this.root.refresh) {
+            this.login()
+            return
+        }
+
         // 用refresh刷新access
         $.ajax({
             url: "https://www.77zzl.top/settings/token/refresh/",
@@ -1659,13 +1664,15 @@ class Settings {
                 this.root.access = resp.access
                 window.localStorage.setItem("access", resp.access)
             },
-            error: () => {
-                this.login()
-            }
         })
     }
 
     refresh_at_start() {
+        if (!this.root.refresh) {
+            this.login()
+            return
+        }
+
         $.ajax({
             url: "https://www.77zzl.top/settings/token/refresh/",
             type: "post",
@@ -1677,9 +1684,6 @@ class Settings {
                 window.localStorage.setItem("access", resp.access)
                 this.getinfo()
             },
-            error: () => {
-                this.login()
-            }
         })
     }
 

@@ -125,6 +125,11 @@ class Settings {
     }
 
     refresh_jwt_token() {
+        if (!this.root.refresh) {
+            this.login()
+            return
+        }
+
         // 用refresh刷新access
         $.ajax({
             url: "https://www.77zzl.top/settings/token/refresh/",
@@ -136,13 +141,15 @@ class Settings {
                 this.root.access = resp.access
                 window.localStorage.setItem("access", resp.access)
             },
-            error: () => {
-                this.login()
-            }
         })
     }
 
     refresh_at_start() {
+        if (!this.root.refresh) {
+            this.login()
+            return
+        }
+
         $.ajax({
             url: "https://www.77zzl.top/settings/token/refresh/",
             type: "post",
@@ -154,9 +161,6 @@ class Settings {
                 window.localStorage.setItem("access", resp.access)
                 this.getinfo()
             },
-            error: () => {
-                this.login()
-            }
         })
     }
 

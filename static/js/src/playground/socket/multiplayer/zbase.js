@@ -67,7 +67,7 @@ class MultiPlayerSocket {
         let player = new Player(
             this.playground,
             this.playground.width / 2 / this.playground.scale,
-            0.5, 0.05, "white", 0.15, "enemy"
+            0.5, 0.05, "white", 0.15, "enemy", 0
         );
 
         player.uuid = uuid;

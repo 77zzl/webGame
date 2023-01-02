@@ -7,6 +7,7 @@ class AcGamePlayground {
         this.root.$ac_game.append(this.$playground);
 
         this.heros = ['#c7828d', '#c7bfd1', '#566791', '#a0847a', '#7c9386', '#f6ca89']
+        this.heroSpeed = [0.15, 0.15, 0.15, 0.2, 0.2, 0.17]
 
         this.start();
     }
@@ -62,7 +63,7 @@ class AcGamePlayground {
         // 创建用户列表
         this.players = []
         // 先添加自己
-        this.players.push(new Player(this, this.width / 2 / this.scale, 0.5, 0.05, this.heros[hero], 0.15, "me"));
+        this.players.push(new Player(this, this.width / 2 / this.scale, 0.5, 0.05, this.heros[hero], this.heroSpeed[hero], "me", hero));
         this.quit_board = new QuitBoard(this)
 
         if (mode === "single mode") { // 针对单人模式生成人机
@@ -87,7 +88,7 @@ class AcGamePlayground {
                 i = i % this.heros.length
             if (i === myHero)
                 i = (i + 1) % this.heros.length
-            this.players.push(new Player(this, this.width / 2 / this.scale, 0.5, 0.05, this.heros[i], 0.15, "robot"))
+            this.players.push(new Player(this, this.width / 2 / this.scale, 0.5, 0.05, this.heros[i], this.heroSpeed[i], "robot", i))
             n ++
             i ++
         }

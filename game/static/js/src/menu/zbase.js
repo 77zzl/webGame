@@ -3,6 +3,7 @@ class AcGameMenu {
     constructor(root) {
         this.root = root
         this.username = ""
+
         this.$menu = $(`
 <div class="ac-game-menu">
     <div class="ac-game-menu-field">

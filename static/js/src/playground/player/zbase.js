@@ -1,6 +1,6 @@
 class Player extends AcGameObject {
     // 父类，坐标，半径，颜色，速度，角色，昵称，头像
-    constructor(playground, x, y, radius, color, speed, character) {
+    constructor(playground, x, y, radius, color, speed, character, hero) {
         super();
         this.playground = playground;
         this.ctx = this.playground.game_map.ctx;
@@ -16,27 +16,30 @@ class Player extends AcGameObject {
         this.color = color;
         this.speed = speed;
         this.character = character;
+        this.hero = hero
 
+        this.shield_radius = radius * 1.8
         this.fireballs = [];
         this.eps = 0.01;
         this.friction = 0.9;
         this.spent_time = 0;
         this.cur_skill = null;
 
-        this.FireballCD = 1;
-        this.BlinkCD = 3;
+        this.cd = [1, 1.5, 2, 2, 1.5, 3]
+        this.BlinkCD = 3
 
         if (this.character === "me") {
             // 准备火球图标
-            this.fireball_coldtime = this.FireballCD;
-            this.fireball_img = new Image();
-            this.fireball_img.src = "https://www.77zzl.top/static/image/menu/fire.png";
+            this.attack_coldtime = this.cd[this.hero]
+            this.attack_img = new Image()
+            this.attack_img.src = "https://www.77zzl.top/static/image/menu/fire.png"
             // 准备闪现图标
-            this.blink_coldtime = this.BlinkCD;
-            this.blink_img = new Image();
+            this.blink_coldtime = this.BlinkCD
+            this.blink_img = new Image()
             this.blink_img.src = "https://www.77zzl.top/static/image/menu/blink.png"
-
         }
+        if (this.character === "robot" && this.hero > 2)
+            this.attack_coldtime = this.cd[this.hero]
     }
 
     start() {
@@ -94,9 +97,13 @@ class Player extends AcGameObject {
                 }
             } else if (e.which === 1) { // 左键
                 outer.playground.quit_board.hide()
-                if (outer.fireball_coldtime > outer.eps)
-                    return false;
-                let fireball = outer.shoot_fireball(tx, ty);
+                if (outer.attack_coldtime > outer.eps)
+                    return false
+                if (outer.hero < 3) {
+                    let fireball = outer.shoot_fireball(tx, ty)
+                } else {
+                    outer.activate_shield()
+                }
 
                 // 如果是联机模式则同步
                 if (outer.playground.mode === "multi mode") {
@@ -134,6 +141,17 @@ class Player extends AcGameObject {
         });
     }
 
+    activate_shield() {
+        let radius = this.shield_radius
+        if (this.hero === 4) {
+            radius = this.radius * 1.3
+        } else if (this.hero === 5) {
+            radius *= 2.5
+        }
+        new Shield(this.playground, this, radius, this.color, 1, 0.01)
+        this.attack_coldtime = this.cd[this.hero]
+    }
+
     shoot_fireball(tx, ty) {
         let x = this.x, y = this.y;
         let radius = 0.01;
@@ -142,9 +160,16 @@ class Player extends AcGameObject {
         let color = this.color;
         let speed = 0.8;
         let move_length = 3;
-        let fireball = new FireBall(this.playground, this, x, y, radius, vx, vy, color, speed, move_length, 0.01);
+        if (this.hero === 1) {
+            speed += 0.1
+            radius *= 0.6
+        } else if (this.hero === 2) {
+            speed -= 0.1
+            radius *= 1.4
+        }
+        let fireball = new FireBall(this.playground, this, x, y, radius, vx, vy, color, speed, move_length, 0.01)
         this.fireballs.push(fireball);
-        this.fireball_coldtime = this.FireballCD;
+        this.attack_coldtime = this.cd[this.hero]
 
         return fireball;
     }
@@ -182,7 +207,7 @@ class Player extends AcGameObject {
         this.vy = Math.sin(angle);
     }
 
-    is_attacked(angle, damage) {
+    is_attacked(angle, damage, attacker) {
         for (let i = 0; i < 20 + Math.random() * 10; i ++ ) {
             let x = this.x, y = this.y;
             let radius = this.radius * Math.random() * 0.1;
@@ -198,27 +223,46 @@ class Player extends AcGameObject {
             this.destroy();
             return false;
         }
-        this.damage_x = Math.cos(angle);
-        this.damage_y = Math.sin(angle);
-        this.damage_speed = damage * 100;
-        this.speed *= 0.8;
+        if (attacker === 0) {
+            this.damage_x = Math.cos(angle)
+            this.damage_y = Math.sin(angle)
+            this.damage_speed = damage * 100
+        } else if (attacker === 1) {
+            this.damage_x = 0
+            this.damage_y = 0
+            this.damage_speed = damage * 100
+        } else if (attacker === 2) {
+            this.damage_x = Math.cos(angle)
+            this.damage_y = Math.sin(angle)
+            this.damage_speed = damage * 200
+        } else {
+            this.damage_x = Math.cos(angle)
+            this.damage_y = Math.sin(angle)
+            this.damage_speed = damage * 100
+        }
+        if (this.hero < 3)
+            this.speed *= 0.9
+        else
+            this.speed *= 1.1
     }
 
     receive_attack(x, y, angle, damage, ball_uuid, attacker) {
         attacker.destroy_fireball(ball_uuid)
         this.x = x
         this.y = y
-        this.is_attacked(angle, damage)
+        this.is_attacked(angle, damage, 0)
     }
 
     update() {
-        this.spent_time += this.timedelta / 1000;
-        this.update_win();
+        this.spent_time += this.timedelta / 1000
+        this.update_win()
         if (this.character === "me" && this.playground.state === "fighting") {
-            this.update_coldtime();
+            this.update_coldtime()
+        } else if (this.character === "robot" && this.hero > 2) {
+            this.update_coldtime()
         }
-        this.update_move();
-        this.render();
+        this.update_move()
+        this.render()
     }
 
     // 如果自己赢了则刷新界面
@@ -250,27 +294,35 @@ class Player extends AcGameObject {
     // 更新技能时间
     update_coldtime() {
         // 火球
-        this.fireball_coldtime -= this.timedelta / 1000;
-        this.fireball_coldtime = Math.max(0, this.fireball_coldtime);
+        this.attack_coldtime -= this.timedelta / 1000;
+        this.attack_coldtime = Math.max(0, this.attack_coldtime);
         // 闪现
         this.blink_coldtime -= this.timedelta / 1000;
         this.blink_coldtime = Math.max(0, this.blink_coldtime);
     }
 
     update_move() {  // 更新玩家移动
-        if (this.character === "robot" && this.spent_time > 4 && Math.random() < 1 / 100.0) {
-            let player = this.playground.players[Math.floor(Math.random() * this.playground.players.length)];
+        if (this.character === "robot" && this.hero < 3 &&this.spent_time > 3 && Math.random() < 1 / 100.0) {
+            let player = this.playground.players[Math.floor(Math.random() * this.playground.players.length)]
             if (player === this)
-                return ;
-            this.shoot_fireball(player.x, player.y);
+                return
+            this.shoot_fireball(player.x, player.y)
+        }
+        if (this.character === "robot" && this.hero > 2 && this.spent_time > 3 && this.attack_coldtime < this.eps && Math.random() < 3 / 100.0) {
+            this.activate_shield()
         }
 
         // 处于击退状态
         if (this.damage_speed > this.eps) {
             this.vx = this.vy = 0;
             this.move_length = 0;
-            this.x += this.damage_x * this.damage_speed * this.timedelta / 1000;
-            this.y += this.damage_y * this.damage_speed * this.timedelta / 1000;
+            let dx = this.x + this.damage_x * this.damage_speed * this.timedelta / 1000;
+            let dy = this.y + this.damage_y * this.damage_speed * this.timedelta / 1000;
+
+            if (0 < dx && dx < this.playground.width / this.playground.scale && 0 < dy && dy < this.playground.height / this.playground.scale) {
+                this.x = dx
+                this.y = dy
+            }
             this.damage_speed *= this.friction;
         } else {
             // 处于自由移动状态且即将停止
@@ -278,9 +330,18 @@ class Player extends AcGameObject {
                 this.move_length = 0;
                 this.vx = this.vy = 0;
                 if (this.character === "robot") {
-                    let tx = Math.random() * this.playground.width / this.playground.scale;
-                    let ty = Math.random() * this.playground.height / this.playground.scale;
-                    this.move_to(tx, ty);
+                    let tx = Math.random() * this.playground.width / this.playground.scale
+                    let ty = Math.random() * this.playground.height / this.playground.scale
+                    if (this.hero > 2 && Math.random() < 0.9) {
+                        let i = Math.floor(Math.random() * this.playground.players.length)
+                        let player = this.playground.players[i]
+                        if (player === this) {
+                            player = this.playground.players[(i + 1) % this.playground.players.length]
+                        }
+                        tx = player.x
+                        ty = player.y
+                    }
+                    this.move_to(tx, ty)
                 }
             } else {
                 let moved = Math.min(this.move_length, this.speed * this.timedelta / 1000);
@@ -312,12 +373,12 @@ class Player extends AcGameObject {
         this.ctx.arc(x * scale, y * scale, r * scale, 0, Math.PI * 2, false);
         this.ctx.stroke();
         this.ctx.clip();
-        this.ctx.drawImage(this.fireball_img, (x - r) * scale, (y - r) * scale, r * 2 * scale, r * 2 * scale);
+        this.ctx.drawImage(this.attack_img, (x - r) * scale, (y - r) * scale, r * 2 * scale, r * 2 * scale);
         this.ctx.restore();
-        if (this.fireball_coldtime > 0) {
+        if (this.attack_coldtime > 0) {
             this.ctx.beginPath();
             this.ctx.moveTo(x * scale, y * scale);
-            this.ctx.arc(x * scale, y * scale, r * scale, 0 - Math.PI / 2, Math.PI * 2 * (1 - this.fireball_coldtime / this.FireballCD) - Math.PI / 2, true);
+            this.ctx.arc(x * scale, y * scale, r * scale, 0 - Math.PI / 2, Math.PI * 2 * (1 - this.attack_coldtime / this.cd[this.hero]) - Math.PI / 2, true);
             this.ctx.lineTo(x * scale, y * scale);
             this.ctx.fillStyle = "rgba(255, 250, 244, 0.6)";
             this.ctx.fill();

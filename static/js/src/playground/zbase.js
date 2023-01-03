@@ -7,7 +7,7 @@ class AcGamePlayground {
         this.root.$ac_game.append(this.$playground);
 
         this.heros = ['#c7828d', '#c7bfd1', '#566791', '#a0847a', '#7c9386', '#f6ca89']
-        this.heroSpeed = [0.15, 0.15, 0.15, 0.2, 0.2, 0.17]
+        this.heroSpeed = [0.15, 0.15, 0.15, 0.2, 0.2, 0.13]
 
         this.start();
     }

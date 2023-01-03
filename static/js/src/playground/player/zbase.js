@@ -161,10 +161,10 @@ class Player extends AcGameObject {
         let speed = 0.8;
         let move_length = 3;
         if (this.hero === 1) {
-            speed += 0.1
+            speed += 0.2
             radius *= 0.6
         } else if (this.hero === 2) {
-            speed -= 0.1
+            speed -= 0.2
             radius *= 1.4
         }
         let fireball = new FireBall(this.playground, this, x, y, radius, vx, vy, color, speed, move_length, 0.01)

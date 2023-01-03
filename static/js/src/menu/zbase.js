@@ -41,7 +41,10 @@ class AcGameMenu {
     }
 
     start() {
-        this.add_listening_events();
+        this.add_listening_events()
+        document.oncontextmenu = function(){
+            return false;
+        }
     }
 
     update_score() {

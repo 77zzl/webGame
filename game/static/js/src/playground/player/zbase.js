@@ -25,7 +25,7 @@ class Player extends AcGameObject {
         this.spent_time = 0;
         this.cur_skill = null;
 
-        this.cd = [1, 1.5, 2, 2, 1.5, 3]
+        this.cd = [1, 1.5, 1.5, 2, 1.5, 3]
         this.BlinkCD = 3
 
         if (this.character === "me") {
@@ -308,7 +308,7 @@ class Player extends AcGameObject {
                 return
             this.shoot_fireball(player.x, player.y)
         }
-        if (this.character === "robot" && this.hero > 2 && this.spent_time > 3 && this.attack_coldtime < this.eps && Math.random() < 3 / 100.0) {
+        if (this.character === "robot" && this.hero > 2 && this.spent_time > 3 && this.attack_coldtime < this.eps && Math.random() < 5 / 100.0) {
             this.activate_shield()
         }
 

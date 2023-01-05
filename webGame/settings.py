@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-_kl-&tmh&*o66!n41*$ud_kxu*d&vibdb0i&sidzn#0gq8v8ya'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['119.23.105.122', 'app4230.acapp.acwing.com.cn', 'www.77zzl.top']
 
@@ -59,7 +59,7 @@ ROOT_URLCONF = 'webGame.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'game/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

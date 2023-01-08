@@ -164,21 +164,6 @@ class Settings {
         })
     }
 
-    // todo
-    getRank() {
-        // 天梯排名
-        $.ajax({
-            url: "https://www.77zzl.top/settings/ranklist/",
-            type: "get",
-            headers: {
-                'Authorization': "Bearer " + this.root.access,
-            },
-            success: resp => {
-                console.log(resp)
-            }
-        })
-    }
-
     getinfo() {
         $.ajax({
             url:"https://www.77zzl.top/settings/getinfo/",

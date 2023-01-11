@@ -141,6 +141,9 @@ class Settings {
                 this.root.access = resp.access
                 window.localStorage.setItem("access", resp.access)
             },
+            error: () => {
+                this.login()
+            }
         })
     }
 
@@ -161,6 +164,9 @@ class Settings {
                 window.localStorage.setItem("access", resp.access)
                 this.getinfo()
             },
+            error: () => {
+                this.login()
+            }
         })
     }
 

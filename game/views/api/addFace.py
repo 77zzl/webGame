@@ -8,49 +8,49 @@ import numpy as np
 
 class AddFace(APIView):
     def post(self, request):
+        path = settings.MEDIA_ROOT
         files = request.FILES
         face = request.POST.get('face')
-        path = settings.MEDIA_ROOT
-        if 'video' in files:
-            video = files['video']
-            faceName = path + '/video/' + face + '.mp4'
-            with open(faceName, 'wb+') as f:
-                for c in video.chunks():
+        cnt = request.POST.get('cnt')
+        photoPath = path + '/photo/' + face
+        if not os.path.exists(photoPath):
+            os.mkdir(photoPath)
+        if 'image' in files:
+            image = files['image']
+            with open(photoPath + '/' + cnt + '.png', 'wb+') as f:
+                for c in image.chunks():
                     f.write(c)
 
             # detect
-            self.detect(path, face, faceName)
-            os.remove(faceName)
+            self.detect(path, face, cnt)
+            return Response({
+                'result': "success",
+                })
 
         return Response({
             'result': "error",
             })
 
 
-    def detect(self, path, face, faceName):
+    def detect(self, path, face, cnt):
         savePath = path + '/face/' + face
         if not os.path.exists(savePath):
             os.mkdir(savePath)
-        cap, cnt = cv.VideoCapture(faceName), 0
-        while True:
-            flag, frame = cap.read()
-            if not flag or cnt > 1:
-                break
-            gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
-            face_detector = cv.CascadeClassifier(path + '/haarcascade_frontalface_default.xml')
-            h, w = gray.shape
-            faces = face_detector.detectMultiScale(gray,
-                                           scaleFactor=1.01,
-                                           minNeighbors=4)
-            if len(faces) == 1:
-                for face in faces:
-                    x, y, w, h = face
-                    faceImg = gray[y:y + h, x:x + w]
-                    faceImg = cv.resize(faceImg, (w // 10, h // 10))
-                    cv.imwrite(savePath + '/' + str(cnt) + '.png', faceImg)
-                    cnt += 1
 
-        cv.destroyAllWindows()
-        cap.release()
-
-
+        face_detector = cv.CascadeClassifier(path + '/haarcascade_frontalface_default.xml')
+        photoPath = path + '/photo/' + face + '/'
+        for i, f in enumerate(os.listdir(photoPath)):
+            img = cv.imread(photoPath + f)
+            os.remove(photoPath + f)
+            gray_img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+            h, w = gray_img.shape
+            faces = face_detector.detectMultiScale(gray_img,
+                        scaleFactor=1.01,
+                        minNeighbors=4,
+                        minSize=(w // 3, h // 3))
+            if len(faces) != 1:
+                continue
+            for face in faces:
+                x, y, w, h = face
+                faceImg = gray_img[y:y + h, x:x + w]
+                cv.imwrite(savePath + '/' + cnt + '.png', faceImg)

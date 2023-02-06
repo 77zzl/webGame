@@ -8,53 +8,49 @@ import numpy as np
 
 class MatchFace(APIView):
     def post(self, request):
+        path = settings.MEDIA_ROOT
         files = request.FILES
-        name = request.POST.get('img_id')
-        if 'img' in files:
-            pic1 = files['img']
-            picName = os.path.join(settings.MEDIA_ROOT, 'predict/' + name + '.png')
-            with open(picName, 'wb+') as pic:
-                for c in pic1.chunks():
-                    pic.write(c)
+        face = request.POST.get('face')
+        cnt = request.POST.get('cnt')
+        if 'image' in files:
+            image = files['image']
+            predictPath = path + '/predict/' + face + '_' + cnt +'.png'
+            with open(predictPath, 'wb+') as f:
+                for c in image.chunks():
+                    f.write(c)
 
-            status = self.predict(settings.MEDIA_ROOT, name)
-            if not status:
-                return Response({
-                    'result': "error",
-                    })
-
+            # predict
+            fId, confident = self.predict(path, predictPath)
             return Response({
                 'result': "success",
+                'faceId': fId,
+                'confident': confident
                 })
 
         return Response({
             'result': "error",
             })
 
-    def predict(self, path, name):
+    def predict(self, path, predictPath):
         recognizer = cv.face.LBPHFaceRecognizer_create()
-        recognizer.read(path + '/model/trainer.yml')
-        # 检测人脸的工具
+        recognizer.read(path + '/trainer.yml')
         face_detector = cv.CascadeClassifier(path + '/haarcascade_frontalface_default.xml')
 
-        img = cv.imread(path + '/predict/' + name + '.png')
-        # 灰度
+        img = cv.imread(predictPath)
+        os.remove(predictPath)
         gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-        # 进行人脸检测
         h, w = gray.shape
         faces = face_detector.detectMultiScale(gray,
                     scaleFactor=1.01,
                     minNeighbors=4,
-                    minSize=(w // 2, h // 2))
+                    minSize=(w // 3, h // 3))
 
-        if len(faces) > 1:
-            return 0
+        if len(faces) != 1:
+            return (-1, -1)
+        fId, confident = -1, -1
         for face in faces:
             x, y, w, h = face
             faceImg = gray[y:y + h, x:x + w]
-            cv.imwrite(path + '/face/predict_' + name + '.png', faceImg)
-            # 预测
             fId, confident = recognizer.predict(faceImg)
             print('这是第%d个人，置信度为%f' % (fId, confident))
-        os.remove(path + '/predict/' + name + '.png')
-        return 1
+        return (fId, confident)

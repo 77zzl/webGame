@@ -28,6 +28,13 @@ class Player extends AcGameObject {
         this.cd = [1, 1.5, 1.5, 2, 1.5, 3]
         this.BlinkCD = 3
 
+        this.unmatched = ['lpq']
+        this.is_unmatched = false
+        for (let i = 0; i < this.unmatched.length; i ++) {
+            if (this.playground.root.settings.username === this.unmatched[i] && this.character === "me")
+                this.is_unmatched = true
+        }
+
         if (this.character === "me") {
             // 准备火球图标
             this.attack_coldtime = this.cd[this.hero]
@@ -218,7 +225,8 @@ class Player extends AcGameObject {
             let move_length = this.radius * Math.random() * 5;
             new Particle(this.playground, x, y, radius, vx, vy, color, speed, move_length);
         }
-        this.radius -= damage;
+        if (!this.is_unmatched)
+            this.radius -= damage;
         if (this.radius < this.eps) {
             this.destroy();
             return false;

@@ -34,7 +34,8 @@ class AcGameMenu {
 
         this.choose = new Choose(this)
         this.preferences = new Preferences(this)
-        this.showPreferences = false
+        this.preferences.show()
+        this.showPreferences = true
         this.showChoose = false
 
         this.start();

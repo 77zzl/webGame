@@ -23,6 +23,8 @@ class ScoreBoard extends AcGameObject {
         $canvas.on('click', function() {
             outer.playground.hide()
             outer.playground.root.menu.show()
+            outer.playground.root.menu.choose.show()
+            outer.playground.root.menu.showChoose = true
         })
     }
 

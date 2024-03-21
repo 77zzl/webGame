@@ -120,7 +120,6 @@ class AcGamePlayground {
 
         // 清空所有html标签
         this.$playground.empty()
-
         this.$playground.hide()
     }
 }

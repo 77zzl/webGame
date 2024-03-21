@@ -284,6 +284,9 @@ class Player extends AcGameObject {
 
     // 更新得分
     update_score(score) {
+        // 未登录时不更新得分
+        if (!this.playground.root.access) return
+
         let outer = this
         let username = this.playground.root.menu.username
         $.ajax({

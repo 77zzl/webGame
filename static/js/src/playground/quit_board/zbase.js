@@ -22,6 +22,12 @@ class QuitBoard {
             outer.hide()
             outer.playground.hide()
             outer.playground.root.menu.show()
+
+            // 对局结束后打开角色选择窗口关闭设置窗口
+            outer.playground.root.menu.choose.show()
+            outer.playground.root.menu.showChoose = true
+            outer.playground.root.menu.preferences.hide()
+            outer.playground.root.menu.showPreferences = false
         })
     }
 

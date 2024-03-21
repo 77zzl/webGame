@@ -7,7 +7,7 @@
 }
 
 .ac-game-settings-login {
-    height: 43vh;
+    height: 47vh;
     width: 20vw;
     position: relative;
     top: 50%;
@@ -110,7 +110,7 @@
 }
 
 .ac-game-settings-register {
-    height: 49vh;
+    height: 54vh;
     width: 20vw;
     position: relative;
     top: 50%;
@@ -120,6 +120,22 @@
     border-radius: 5px;
 }
 
+
+.ac-game-settings-single > img {
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin-top: 4.5vh;
+    cursor: pointer;
+}
+
+.ac-game-settings-single > div {
+    font-size: 1.5vh;
+    color: white;
+    text-align: center;
+    display: block;
+    margin-top: -1.2vh;
+}
 
 .ac-game-menu {
     width: 100%;
@@ -256,13 +272,13 @@
 }
 
 .ac-game-menu-preferences-help-head {
-  text-align: center;
-  font-size: 5vh;
-  letter-spacing: 0.2vh;
-  font-weight: 500;
-  font-family: "Gill Sans", sans-serif;
-  color: #dbdbdb;
-  margin-top: -2vh;
+    text-align: center;
+    font-size: 5vh;
+    letter-spacing: 0.2vh;
+    font-weight: 500;
+    font-family: "Gill Sans", sans-serif;
+    color: #dbdbdb;
+    margin-top: -2vh;
 }
 
 .ac-game-menu-preferences-help-skill {
@@ -306,25 +322,25 @@ text {
 }
 
 .ac-game-menu-preferences-button {
-  width: 30vw;
-  height: 5vh;
-  text-align: center;
-  line-height: 5vh;
-  font-size: 1vh;
-  font-family: "Gill Sans", sans-serif;
-  letter-spacing: 0.3vh;
-  font-weight: 500;
-  background-color: #dbdbdb;
-  border-radius: 10vh;
-  transition: all 0.3s ease 0s;
-  margin-bottom: 2vh;
-  }
+    width: 30vw;
+    height: 5vh;
+    text-align: center;
+    line-height: 5vh;
+    font-size: 1vh;
+    font-family: "Gill Sans", sans-serif;
+    letter-spacing: 0.3vh;
+    font-weight: 500;
+    background-color: #dbdbdb;
+    border-radius: 10vh;
+    transition: all 0.3s ease 0s;
+    margin-bottom: 2vh;
+}
 
 .ac-game-menu-preferences-button:hover {
-  background-color: #96d0f5;
-  box-shadow: 0px 15px 20px rgba(86,118,157,0.9);
-  color: #fff;
-  transform: translateY(-7px);
+    background-color: #96d0f5;
+    box-shadow: 0px 15px 20px rgba(86,118,157,0.9);
+    color: #fff;
+    transform: translateY(-7px);
 }
 
 .ac-game-playground {
@@ -423,14 +439,14 @@ text {
 }
 
 .ac-game-settings-footer a {
-    color: #7ba0cb;
+    color: #b2a78e;
     text-decoration :none;
     font-size: 1vh;
     font-weight: 100;
 }
 
 .ac-game-settings-footer a:hover {
-    color: #e8f6fc;
+    color: #ffffff;
     text-decoration :none;
 }
 
@@ -442,14 +458,14 @@ text {
 }
 
 .ac-game-menu-footer a {
-    color: #7ba0cb;
+    color: #b2a78e;
     text-decoration :none;
     font-size: 1vh;
     font-weight: 100;
 }
 
 .ac-game-menu-footer a:hover {
-    color: #e8f6fc;
+    color: #ffffff;
     text-decoration :none;
 }
 

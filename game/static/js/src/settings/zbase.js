@@ -40,6 +40,10 @@ class Settings {
                 AcWing一键登录
             </div>
         </div>
+        <div class="ac-game-settings-single">
+            <img width="30" src="static/image/settings/single.png">
+            <div>单机</div>
+        </div>
     </div>
     <div class="ac-game-settings-register">
         <div class="ac-game-settings-title">
@@ -77,12 +81,17 @@ class Settings {
                 AcWing一键登录
             </div>
         </div>
+        <div class="ac-game-settings-single">
+            <img width="30" src="static/image/settings/single.png">
+            <div>单机</div>
+        </div>
     </div>
     <div class="ac-game-settings-footer">
         <a href="https://beian.miit.gov.cn">粤ICP备2022156726号-1</a>
     </div>
 </div>
             `)
+        this.$settings.hide()
         this.$login = this.$settings.find(".ac-game-settings-login");
         this.$login_username = this.$login.find(".ac-game-settings-username input");
         this.$login_password = this.$login.find(".ac-game-settings-password input");
@@ -90,6 +99,7 @@ class Settings {
         this.$login_error_message = this.$login.find(".ac-game-settings-error-message");
         this.$login_register = this.$login.find(".ac-game-settings-option");
 
+        // 关上登陆界面
         this.$login.hide();
 
         this.$register = this.$settings.find(".ac-game-settings-register");
@@ -100,10 +110,13 @@ class Settings {
         this.$register_error_message = this.$register.find(".ac-game-settings-error-message");
         this.$register_login = this.$register.find(".ac-game-settings-option");
 
+        // 关上注册界面
         this.$register.hide();
 
         this.$acwing_login = this.$settings.find('.ac-game-settings-acwing img');
+        this.$single = this.$settings.find('.ac-game-settings-single img')
         this.root.$ac_game.append(this.$settings);
+
 
         this.start();
 
@@ -170,6 +183,7 @@ class Settings {
         })
     }
 
+    // 登陆或注册成功获取用户信息并打开菜单
     getinfo() {
         $.ajax({
             url:"https://www.77zzl.top/settings/getinfo/",
@@ -217,7 +231,15 @@ class Settings {
         this.add_listening_events_register()
         this.$acwing_login.click(function() {
             outer.acwing_login();
-        });
+        })
+        this.$single.click(function() {
+            outer.hide()
+            outer.root.menu.show()
+            outer.root.menu.preferences.show()
+            outer.root.menu.showPreferences = true
+            outer.root.menu.choose.hide()
+            outer.root.menu.showChoose = false
+        })
     }
 
     add_listening_events_login() {

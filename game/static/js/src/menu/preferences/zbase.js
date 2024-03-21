@@ -43,14 +43,13 @@ class Preferences {
             `)
         this.menu.$menu.append(this.$preferences)
         this.$logout = this.$preferences.find('.ac-game-menu-preferences-button')
+        this.$logout.hide()
 
         this.hide()
         this.start()
     }
 
-    start() {
-        this.add_listening_events()
-    }
+    start() {}
 
     add_listening_events() {
         let outer = this
@@ -60,7 +59,15 @@ class Preferences {
     }
 
     show() {
+        let outer = this
         this.$preferences.show()
+
+        // 当用户登陆时才显示登出按钮
+        setTimeout(function(){
+            if (outer.menu.root.access) {
+                outer.$logout.show()
+                outer.add_listening_events()
+            }}, 500)
     }
 
     hide() {

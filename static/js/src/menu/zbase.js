@@ -25,12 +25,13 @@ class AcGameMenu {
     </div>
 </div>
 `);
-        this.$menu.hide();
+        // this.$menu.hide();
         this.root.$ac_game.append(this.$menu);
         this.$single_mode = this.$menu.find('.ac-game-menu-field-item-single-mode');
         this.$multi_mode = this.$menu.find('.ac-game-menu-field-item-multi-mode');
         this.$settings = this.$menu.find('.ac-game-menu-field-item-settings');
         this.$score = this.$menu.find('.ac-game-menu-score')
+        this.$score.hide()
 
         this.choose = new Choose(this)
         this.preferences = new Preferences(this)
@@ -48,8 +49,13 @@ class AcGameMenu {
         }
     }
 
+    // 没有登陆时不显示个人分数
     update_score() {
         this.root.access = window.localStorage.getItem("access")
+        // 若未登陆则不显示分数
+        if (!this.root.access) return
+
+        this.$score.show()
         $.ajax({
             url:"https://www.77zzl.top/settings/getinfo/",
             type: "get",
@@ -77,11 +83,17 @@ class AcGameMenu {
             else
                 outer.choose.show()
             outer.showChoose = !outer.showChoose
-        });
+        })
+        // 如果用户未登录则跳转至登陆界面
         this.$multi_mode.click(function(){
-            outer.hide();
-            outer.root.playground.show("multi mode", 0, 3);
-        });
+            if (outer.root.access) {
+                outer.hide()
+                outer.root.playground.show("multi mode", 0, 3)
+            } else {
+                outer.hide()
+                outer.root.settings.show()
+            }
+        })
         this.$settings.click(function(){
             outer.showChoose = false
             outer.choose.hide()
